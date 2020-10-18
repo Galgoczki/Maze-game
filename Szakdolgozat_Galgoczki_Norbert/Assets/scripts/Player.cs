@@ -18,8 +18,8 @@ public class Player : MonoBehaviour
     public float moveX;
     public float moveZ;
     public float speed = 10f;
-    public float gravitysize = -10f;
-    public float jumpHight = 3f;
+    public float gravitysize = 0f;//default -10f
+    public float jumpHight = 1f;
     public Vector3 move;
     public Vector3 movegravity;
     // Start is called before the first frame update
@@ -46,7 +46,7 @@ public class Player : MonoBehaviour
         vertikalisNezes = Mathf.Clamp(vertikalisNezes, -90f, 90f);
         kamera.transform.localRotation = Quaternion.Euler(vertikalisNezes,0f,0f);
         playerBody.Rotate(Vector3.up * egerX);
-
+        
         move = transform.right *moveX +transform.forward * moveZ;
         
         controller.Move(move * speed * Time.deltaTime);
