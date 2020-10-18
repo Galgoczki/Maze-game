@@ -203,14 +203,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 509845559}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 51ea905469d496a4eaf6a03ba1ba2bb6, type: 3}
+  m_Script: {fileID: 11500000, guid: 2ce4006a4a352374d87bf383e3826bdc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  kamera: {fileID: 963194228}
   playerBody: {fileID: 509845563}
-  xForgatas: 0
+  controller: {fileID: 509845560}
+  vertikalisNezes: 0
   egerErzekenyseg: 1000
   egerX: 0
   egerY: 0
+  moveX: 0
+  moveZ: 0
+  speed: 1000
+  move: {x: 0, y: 0, z: 0}
 --- !u!4 &509845563
 Transform:
   m_ObjectHideFlags: 0
@@ -219,7 +225,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 509845559}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.58, z: 0.12}
+  m_LocalPosition: {x: 2.73, y: 1.43, z: 0.12}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 963194228}
@@ -282,7 +288,7 @@ Light:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 705507993}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
@@ -344,7 +350,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 705507993}
   m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
-  m_LocalPosition: {x: 8.87, y: 5.58, z: -15.35}
+  m_LocalPosition: {x: -157.7, y: -27.1, z: -191.6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
