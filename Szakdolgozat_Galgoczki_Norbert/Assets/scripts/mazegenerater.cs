@@ -21,23 +21,26 @@ public class Mazegenerater : MonoBehaviour
     public float size = 6;//size of the maze's cells
     private float fullcellsize = 7;//cell+wallssize
     private Vector3 starterpoint = new Vector3(20,0,20);
+    private bool generateDone = false;
+    private bool[,] generateLeft;
     // Start is called before the first frame update
-    void Start()
-    {
+    void Start(){
         rows    = rnd.Next(3,15);
         columns = rnd.Next(3,15);
 
         basemaze = new bool[rows,columns,4];
+        generateLeft = new bool[rows,columns];
         for (int i = 0; i < rows; i++){
             for (int j = 0; j < columns; j++){
                 basemaze[i,j,0]=true;// left
                 basemaze[i,j,1]=true;// top
                 basemaze[i,j,2]=true;// right
                 basemaze[i,j,3]=true;// down
+                generateLeft[i,j]=false;
             }
         }
-
-        //basemaze = generat();
+        generateRoom();
+        generate();
 
         for (int i = 0; i < rows; i++){//x
             for (int j = 0; j < columns; j++){//y
@@ -60,11 +63,40 @@ public class Mazegenerater : MonoBehaviour
                 }
             }
         }
+        berendezes();
     }
 
     // Update is called once per frame
     void Update()
     {
         
+    }
+
+    void generate(){
+        bool done=false;//ideiglenes változ
+        while (!generateDone){//if a cell is done -> true
+            done = true;
+            
+
+
+            //its done?
+            for (int i = 0; i < rows; i++){
+                for (int j = 0; j < columns; j++){//ne felejtsd el updatelni!!
+                    if(!generateLeft[i,j]){
+                        done = false;
+                    }
+                }
+            }
+            //generatDone = done; if its done xd
+            generateDone = true;
+        }
+    }
+
+    void berendezes(){
+
+    }
+
+    void generateRoom(){
+
     }
 }
