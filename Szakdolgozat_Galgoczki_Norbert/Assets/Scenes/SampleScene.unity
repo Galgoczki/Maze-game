@@ -303,7 +303,7 @@ MonoBehaviour:
   moveX: 0
   moveZ: 0
   speed: 1000
-  gravitysize: 0
+  gravitysize: -10
   jumpHight: 1
   move: {x: 0, y: 0, z: 0}
   movegravity: {x: 0, y: 0, z: 0}
