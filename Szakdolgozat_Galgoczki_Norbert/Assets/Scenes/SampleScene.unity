@@ -303,7 +303,7 @@ MonoBehaviour:
   moveX: 0
   moveZ: 0
   speed: 1000
-  gravitysize: -10
+  gravitysize: 0
   jumpHight: 1
   move: {x: 0, y: 0, z: 0}
   movegravity: {x: 0, y: 0, z: 0}
@@ -618,6 +618,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65f45fb2e3eecc445acc4d5fc5ebd705, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playersTransforms: {fileID: 509845563}
+  key: 
+  playerStarterpont: {x: 0, y: 0, z: 0}
+  keyalreadygiven: 0
   floor: {fileID: 2916679782371279102, guid: 75132acc379e10646898a9ad91f91c1c, type: 3}
   roof: {fileID: 1747245151099305500, guid: 225997904b973c84ab8be71fdeb1985b, type: 3}
   wall: {fileID: 8325070252842077902, guid: e8cbf890010acfb489268df01539c6d1, type: 3}
