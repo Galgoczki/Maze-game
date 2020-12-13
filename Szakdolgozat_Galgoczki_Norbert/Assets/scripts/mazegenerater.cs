@@ -31,8 +31,8 @@ public class Mazegenerater : MonoBehaviour
     private int positionInTheFiloArray = 0;
     // Start is called before the first frame update
     void Start(){
-        rows    = rnd.Next(3,16);
-        columns = rnd.Next(3,16);
+        rows    = rnd.Next(10,20);
+        columns = rnd.Next(10,20);
 
         basemaze = new bool[rows,columns,4];
         generateLeft = new short[rows,columns];
@@ -48,7 +48,7 @@ public class Mazegenerater : MonoBehaviour
         if(!keyalreadygiven){
             generatTheKey();
         }
-        generateRoom();
+        
         generate();
         for (int i = 0; i < rows; i++){//x
             for (int j = 0; j < columns; j++){//y
@@ -56,7 +56,7 @@ public class Mazegenerater : MonoBehaviour
                 Instantiate(floor,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2,starterpoint.y-0.5f,starterpoint.z+(j*fullcellsize)-fullcellsize/2),Quaternion.identity,floors.transform);
                 
                 //roof
-                //Instantiate(roof,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2,starterpoint.y+5.5f,starterpoint.z+(j*fullcellsize)-fullcellsize/2),Quaternion.identity,roofs.transform);
+                Instantiate(roof,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2,starterpoint.y+5.5f,starterpoint.z+(j*fullcellsize)-fullcellsize/2),Quaternion.identity,roofs.transform);
                 //walls 
                 if(basemaze[i,j,0]){// left
                     Instantiate(wall,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2-3.25f,starterpoint.y+2.5f,starterpoint.z+(j*fullcellsize)-fullcellsize/2),Quaternion.Euler(0f,270f,0f),walls.transform); 
@@ -72,7 +72,7 @@ public class Mazegenerater : MonoBehaviour
                 }
             }
         }
-        berendezes();
+        generateRoom();
     }
 
     // Update is called once per frame
@@ -374,11 +374,13 @@ public class Mazegenerater : MonoBehaviour
         return false;
     }
 
-    void berendezes(){
-
-    }
 
     void generateRoom(){
+        int b=rnd.Next(2,5);
+        for(int i=0;i<b;i++){
+            int nagysag=70;
+
+        }
 
     }
     int nextstep(){
