@@ -56,7 +56,7 @@ public class Mazegenerater : MonoBehaviour
                 Instantiate(floor,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2,starterpoint.y-0.5f,starterpoint.z+(j*fullcellsize)-fullcellsize/2),Quaternion.identity,floors.transform);
                 
                 //roof
-                Instantiate(roof,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2,starterpoint.y+5.5f,starterpoint.z+(j*fullcellsize)-fullcellsize/2),Quaternion.identity,roofs.transform);
+                //Instantiate(roof,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2,starterpoint.y+5.5f,starterpoint.z+(j*fullcellsize)-fullcellsize/2),Quaternion.identity,roofs.transform);
                 //walls 
                 if(basemaze[i,j,0]){// left
                     Instantiate(wall,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2-3.25f,starterpoint.y+2.5f,starterpoint.z+(j*fullcellsize)-fullcellsize/2),Quaternion.Euler(0f,270f,0f),walls.transform); 
@@ -225,7 +225,7 @@ public class Mazegenerater : MonoBehaviour
     //--------------
         int asd=1;
         int szamlalo=0;
-        while (/*!generateDone &&*/ ListOfThePossiblaStarterPoints.Count>0 && szamlalo<20){//if a cell is done -> true
+        while (/*!generateDone &&*/ ListOfThePossiblaStarterPoints.Count>0){//if a cell is done -> true
             szamlalo++;
             if(algoritmStarterPoints[asd]<ListOfThePossiblaStarterPoints.Count){//valamiért sosme lép bele
                 recursiveGenerate(ListOfThePossiblaStarterPoints[algoritmStarterPoints[asd]][0],ListOfThePossiblaStarterPoints[algoritmStarterPoints[asd]][1],ListOfThePossiblaStarterPoints[algoritmStarterPoints[asd]][0],ListOfThePossiblaStarterPoints[algoritmStarterPoints[asd]][1],deep);
@@ -307,6 +307,7 @@ public class Mazegenerater : MonoBehaviour
             Debug.Log(ListOfThePossiblaStarterPoints.Count);
         }
     //---------
+    /*
     string itemitem="";
     for (int i = 0; i < rows; i++){
         for (int j = 0; j < columns; j++){
@@ -315,7 +316,7 @@ public class Mazegenerater : MonoBehaviour
         itemitem+="\n";
     }
     Debug.Log(itemitem);
-    
+    */
     //-----------
     }
     bool recursiveGenerate(int prex,int prey,int x,int y,int currentRecursivePoinLeft){//i didnt konw now why we give back bool
