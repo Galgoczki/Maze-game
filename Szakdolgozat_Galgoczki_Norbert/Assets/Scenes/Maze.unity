@@ -303,13 +303,13 @@ MonoBehaviour:
   isGrounded: 0
   controller: {fileID: 509845560}
   vertikalisNezes: 0
-  egerErzekenyseg: 1000
+  egerErzekenyseg: 100
   egerX: 0
   egerY: 0
   moveX: 0
   moveZ: 0
-  speed: 1000
-  gravitysize: -2
+  speed: 100
+  gravitysize: -10
   jumpHight: 2
   move: {x: 0, y: 0, z: 0}
   movegravity: {x: 0, y: 0, z: 0}
