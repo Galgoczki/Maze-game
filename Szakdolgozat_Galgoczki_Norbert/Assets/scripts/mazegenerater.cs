@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Mazegenerater : MonoBehaviour
 {
+    private GameObject dogGO;
+    private Dog dogscript;
     [SerializeField]private Transform playersTransforms;
     public string key;//where we start the generat;how deep is the FILO go;where is the player start ;wher the filo is step;
     [SerializeField]private Vector3 playerStarterpont;
@@ -16,6 +18,7 @@ public class Mazegenerater : MonoBehaviour
     [SerializeField]private GameObject roofs;
     [SerializeField]private GameObject walls;
     [SerializeField]private bool[,,] basemaze;
+    [SerializeField]private int[,] roomMap;
     //    _1_default
     // 0 |   | 2       its the cells wall numbers
     //   |_3_|
@@ -31,8 +34,14 @@ public class Mazegenerater : MonoBehaviour
     private int positionInTheFiloArray = 0;
     // Start is called before the first frame update
     void Start(){
-        rows    = rnd.Next(10,20);
-        columns = rnd.Next(10,20);
+
+
+        //dogGO = GameObject.Find("dog");
+        //dogscript = dogGO.GetComponent<Dog>();
+
+
+        rows    = rnd.Next(10,40);
+        columns = rnd.Next(10,40);
 
         basemaze = new bool[rows,columns,4];
         generateLeft = new short[rows,columns];
@@ -48,7 +57,7 @@ public class Mazegenerater : MonoBehaviour
         if(!keyalreadygiven){
             generatTheKey();
         }
-        
+        generateRoom();
         generate();
         for (int i = 0; i < rows; i++){//x
             for (int j = 0; j < columns; j++){//y
@@ -72,7 +81,7 @@ public class Mazegenerater : MonoBehaviour
                 }
             }
         }
-        generateRoom();
+        
     }
 
     // Update is called once per frame
@@ -175,7 +184,7 @@ public class Mazegenerater : MonoBehaviour
         recursiveGenerate(ListOfThePossiblaStarterPoints[0][0],ListOfThePossiblaStarterPoints[0][1],ListOfThePossiblaStarterPoints[0][0],ListOfThePossiblaStarterPoints[0][1],deep);
         ListOfThePossiblaStarterPoints.Clear();
         for (int i = 0; i < rows; i++){
-            for (int j = 0; j < columns; j++){//ne felejtsd el updatelni!!
+            for (int j = 0; j < columns; j++){
             bool needPutInTheTable=false;
                 if(generateLeft[i,j]==-1){//-1 is meaning the algoritm is now on this cells(the FILO part)
                     if(i==0){
@@ -211,9 +220,9 @@ public class Mazegenerater : MonoBehaviour
                     }
                 }
                 if(needPutInTheTable){
-                    ListOfThePossiblaStarterPoints.Add(new int[2]{i,j});
+                    ListOfThePossiblaStarterPoints.Add(new int[2]{i,j});//have free cell around of this
                 }else{
-                    generateLeft[i,j]=-2;
+                    generateLeft[i,j]=-2;//not have
                 }
                 }
             }
@@ -225,19 +234,19 @@ public class Mazegenerater : MonoBehaviour
     //--------------
         int asd=1;
         int szamlalo=0;
-        while (/*!generateDone &&*/ ListOfThePossiblaStarterPoints.Count>0){//if a cell is done -> true
+        while (!generateDone && ListOfThePossiblaStarterPoints.Count>0){//if a cell is done -> true
             szamlalo++;
-            if(algoritmStarterPoints[asd]<ListOfThePossiblaStarterPoints.Count){//valamiért sosme lép bele
+            if(algoritmStarterPoints[asd]<ListOfThePossiblaStarterPoints.Count){
                 recursiveGenerate(ListOfThePossiblaStarterPoints[algoritmStarterPoints[asd]][0],ListOfThePossiblaStarterPoints[algoritmStarterPoints[asd]][1],ListOfThePossiblaStarterPoints[algoritmStarterPoints[asd]][0],ListOfThePossiblaStarterPoints[algoritmStarterPoints[asd]][1],deep);
                 
             }else{
                 asd=(asd+1>2)?0:asd++;
-                if(algoritmStarterPoints[asd]<ListOfThePossiblaStarterPoints.Count){//valamiért sosme lép bele
+                if(algoritmStarterPoints[asd]<ListOfThePossiblaStarterPoints.Count){
                     recursiveGenerate(ListOfThePossiblaStarterPoints[algoritmStarterPoints[asd]][0],ListOfThePossiblaStarterPoints[algoritmStarterPoints[asd]][1],ListOfThePossiblaStarterPoints[algoritmStarterPoints[asd]][0],ListOfThePossiblaStarterPoints[algoritmStarterPoints[asd]][1],deep);
                     
                 }else{
                     asd=(asd+1>2)?0:asd++;
-                    if(algoritmStarterPoints[asd]<ListOfThePossiblaStarterPoints.Count){//valamiért sosme lép bele
+                    if(algoritmStarterPoints[asd]<ListOfThePossiblaStarterPoints.Count){
                         recursiveGenerate(ListOfThePossiblaStarterPoints[algoritmStarterPoints[asd]][0],ListOfThePossiblaStarterPoints[algoritmStarterPoints[asd]][1],ListOfThePossiblaStarterPoints[algoritmStarterPoints[asd]][0],ListOfThePossiblaStarterPoints[algoritmStarterPoints[asd]][1],deep);
                         
                     }else{
@@ -250,11 +259,10 @@ public class Mazegenerater : MonoBehaviour
             
 
             ListOfThePossiblaStarterPoints.Clear();
-            Debug.Log(ListOfThePossiblaStarterPoints.Count);
             done = true;
             //its done? and where we start next
             for (int i = 0; i < rows; i++){
-                for (int j = 0; j < columns; j++){//ne felejtsd el updatelni!!
+                for (int j = 0; j < columns; j++){
                 bool needPutInTheTable=false;
                     if(generateLeft[i,j]==-1){//-1 is meaning the algoritm is now on this cells(the FILO part)
                         if(i==0){
@@ -304,7 +312,7 @@ public class Mazegenerater : MonoBehaviour
                 }
             }
             generateDone=done;
-            Debug.Log(ListOfThePossiblaStarterPoints.Count);
+            //Debug.Log(ListOfThePossiblaStarterPoints.Count);
         }
     //---------
     /*
@@ -377,13 +385,122 @@ public class Mazegenerater : MonoBehaviour
 
 
     void generateRoom(){
-        int b=rnd.Next(2,5);
-        for(int i=0;i<b;i++){
-            int nagysag=70;
-
+        //int a=rnd.Next(2,5);
+        int numbersOfRoomsCell = ((rows*columns)/5)-((rows*columns)%5);
+        int BigRooms=0;//4x4
+        int NormalRoom=0;//3x3
+        int SmallRoom=0;//2x2
+        while(numbersOfRoomsCell>=4){
+            if(numbersOfRoomsCell>=(4*4)){
+                if(rnd.Next(0,100)>=30){
+                    BigRooms++;
+                    numbersOfRoomsCell-=(4*4);
+                }
+            }
+            if(numbersOfRoomsCell>=(3*3)){
+                if(rnd.Next(0,100)>=60){
+                    NormalRoom++;
+                    numbersOfRoomsCell-=(4*4);
+                }
+            }
+            if(numbersOfRoomsCell>=(2*2)){
+                    SmallRoom++;
+                    numbersOfRoomsCell-=(4*4);
+            }
+        }
+        roomMap = new int[rows,columns];
+        int roomnumber =1;
+        for (int i = 0; i < rows; i++){
+            for (int j = 0; j < columns; j++){
+                roomMap[i,j]=0;// no room here
+            }
         }
 
+        for(int a=BigRooms;a>0;a--){
+            bool done=false;
+            while(!done){
+            int i = rnd.Next(0,rows-3);
+            int j = rnd.Next(0,columns-3);//pick a random spot
+            done=true;
+            for (int ii = i; ii < i+4; ii++){
+                for (int jj = j; jj < j+4; jj++){
+                    if(roomMap[ii,jj]!=0){
+                        done=false;
+                    }
+                }
+            }
+            if(done){
+                for (int ii = i; ii < i+4; ii++){
+                    for (int jj = j; jj < j+4; jj++){
+                        //roomMap[ii,jj]=roomnumber;
+                        roomMap[ii,jj]=3;
+                    }
+                }
+                roomnumber++;
+            }
+            }
+        }
+
+        for(int b=NormalRoom;b>0;b--){
+            bool done=false;
+            while(!done){
+            int i = rnd.Next(0,rows-2);
+            int j = rnd.Next(0,columns-2);//pick a random spot
+            done=true;
+            for (int ii = i; ii < i+3; ii++){
+                for (int jj = j; jj < j+3; jj++){
+                    if(roomMap[ii,jj]!=0){
+                        done=false;
+                    }
+                }
+            }
+            if(done){
+                for (int ii = i; ii < i+3; ii++){
+                    for (int jj = j; jj < j+3; jj++){
+                        //roomMap[ii,jj]=roomnumber;
+                        roomMap[ii,jj]=2;
+                    
+                    }
+                }
+                roomnumber++;
+            }
+            }
+        }
+
+        for(int c=SmallRoom;c>0;c--){
+            bool done=false;
+            while(!done){
+            int i = rnd.Next(0,rows-1);
+            int j = rnd.Next(0,columns-1);//pick a random spot
+            done=true;
+            for (int ii = i; ii < i+2; ii++){
+                for (int jj = j; jj < j+2; jj++){
+                    if(roomMap[ii,jj]!=0){
+                        done=false;
+                    }
+                }
+            }
+            if(done){
+                for (int ii = i; ii < i+2; ii++){
+                    for (int jj = j; jj < j+2; jj++){
+                        //roomMap[ii,jj]=roomnumber;
+                        roomMap[ii,jj]=1;
+                    }
+                }
+                roomnumber++;
+            }
+            }
+        }
+        string itemitem="";
+        for (int i = 0; i < rows; i++){
+            for (int j = 0; j < columns; j++){
+                itemitem += roomMap[i,j]+" ";
+            }   
+            itemitem+="\n";
+        }
+        Debug.Log(itemitem);
     }
+
     int nextstep(){
         positionInTheFiloArray += 1; //readable
         if(positionInTheFiloArray<algorimusFilo.Length){
