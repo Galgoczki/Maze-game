@@ -18,13 +18,15 @@ public class Mazegenerater : MonoBehaviour
     [SerializeField]private GameObject roofs;
     [SerializeField]private GameObject walls;
     [SerializeField]private bool[,,] basemaze;
+    [SerializeField]private bool[,,] doorMap;
     [SerializeField]private int[,] roomMap;
-    //    _1_default
-    // 0 |   | 2       its the cells wall numbers
-    //   |_3_|
+    //    _2_default
+    // 3 |   | 1       its the cells wall numbers
+    //   |_0_|
     // default pos of wall --
-    [SerializeField]private int rows;
-    [SerializeField]private int columns;
+    //x_axis_size;z_axis_size
+    [SerializeField]private int x_axis_size;
+    [SerializeField]private int z_axis_size;
     [SerializeField]private float size = 6;//size of the maze's cells
     public short[,] generateLeft;
     private float fullcellsize = 7;//cell+wallssize
@@ -40,44 +42,64 @@ public class Mazegenerater : MonoBehaviour
         //dogscript = dogGO.GetComponent<Dog>();
 
 
-        rows    = rnd.Next(10,40);
-        columns = rnd.Next(10,40);
+        x_axis_size    = rnd.Next(10,40);
+        z_axis_size = rnd.Next(10,40);
 
-        basemaze = new bool[rows,columns,4];
-        generateLeft = new short[rows,columns];
-        for (int i = 0; i < rows; i++){
-            for (int j = 0; j < columns; j++){
-                basemaze[i,j,0]=true;// left
-                basemaze[i,j,1]=true;// top
-                basemaze[i,j,2]=true;// right
-                basemaze[i,j,3]=true;// down
+        basemaze = new bool[x_axis_size,z_axis_size,4];
+        doorMap = new bool[x_axis_size,z_axis_size,4];
+        generateLeft = new short[x_axis_size,z_axis_size];
+        for (int i = 0; i < x_axis_size; i++){
+            for (int j = 0; j < z_axis_size; j++){
+                basemaze[i,j,0]=true;// down
+                basemaze[i,j,1]=true;// right
+                basemaze[i,j,2]=true;// top
+                basemaze[i,j,3]=true;// left
+                
+                doorMap[i,j,0]=false;// down
+                doorMap[i,j,1]=false;// right
+                doorMap[i,j,2]=false;// top
+                doorMap[i,j,3]=false;// left
                 generateLeft[i,j]=0;
             }
         }
         if(!keyalreadygiven){
             generatTheKey();
         }
+
         generateRoom();
+
         generate();
-        for (int i = 0; i < rows; i++){//x
-            for (int j = 0; j < columns; j++){//y
+        for (int i = 0; i < x_axis_size; i++){//x
+            for (int j = 0; j < z_axis_size; j++){//y
                 //floor
                 Instantiate(floor,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2,starterpoint.y-0.5f,starterpoint.z+(j*fullcellsize)-fullcellsize/2),Quaternion.identity,floors.transform);
                 
                 //roof
                 //Instantiate(roof,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2,starterpoint.y+5.5f,starterpoint.z+(j*fullcellsize)-fullcellsize/2),Quaternion.identity,roofs.transform);
                 //walls 
-                if(basemaze[i,j,0]){// left
-                    Instantiate(wall,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2-3.25f,starterpoint.y+2.5f,starterpoint.z+(j*fullcellsize)-fullcellsize/2),Quaternion.Euler(0f,270f,0f),walls.transform); 
+                if(basemaze[i,j,0]){// left - down
+                    Instantiate(wall,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2-3.25f       ,starterpoint.y+2.5f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2)            ,Quaternion.Euler(0f,270f,0f),walls.transform); 
                 }
-                if(basemaze[i,j,1]){// top
-                    Instantiate(wall,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2,starterpoint.y+2.5f,starterpoint.z+(j*fullcellsize)-fullcellsize/2-3.25f),Quaternion.Euler(0f,0f,0f),walls.transform);
+                if(basemaze[i,j,1]){// top - right
+                    Instantiate(wall,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2             ,starterpoint.y+2.5f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2-3.25f)      ,Quaternion.Euler(0f,0f,0f),walls.transform);
                 }
-                if(basemaze[i,j,2]){// right
-                    Instantiate(wall,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2+3.25f,starterpoint.y+2.5f,starterpoint.z+(j*fullcellsize)-fullcellsize/2),Quaternion.Euler(0f,90f,0f),walls.transform);
+                if(basemaze[i,j,2]){// right -top
+                    Instantiate(wall,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2+3.25f       ,starterpoint.y+2.5f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2)            ,Quaternion.Euler(0f,90f,0f),walls.transform);
                 }
-                if(basemaze[i,j,3]){// down
-                    Instantiate(wall,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2,starterpoint.y+2.5f,starterpoint.z+(j*fullcellsize)-fullcellsize/2+3.25f),Quaternion.Euler(0f,180f,0f),walls.transform);
+                if(basemaze[i,j,3]){// down - left
+                    Instantiate(wall,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2             ,starterpoint.y+2.5f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2+3.25f)      ,Quaternion.Euler(0f,180f,0f),walls.transform);
+                }
+                if(doorMap[i,j,0]){
+                    Instantiate(wall,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2-3.25f       ,starterpoint.y+12.5f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2)            ,Quaternion.Euler(0f,270f,0f),walls.transform); 
+                }
+                if(doorMap[i,j,1]){
+                    Instantiate(wall,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2             ,starterpoint.y+12.5f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2-3.25f)      ,Quaternion.Euler(0f,0f,0f),walls.transform);
+                }
+                if(doorMap[i,j,2]){
+                    Instantiate(wall,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2+3.25f       ,starterpoint.y+12.5f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2)            ,Quaternion.Euler(0f,90f,0f),walls.transform);
+                }
+                if(doorMap[i,j,3]){
+                    Instantiate(wall,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2             ,starterpoint.y+12.5f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2+3.25f)      ,Quaternion.Euler(0f,180f,0f),walls.transform);
                 }
             }
         }
@@ -103,9 +125,9 @@ public class Mazegenerater : MonoBehaviour
         //generat how deep is the FILO is go
 
         //here i have 2 idea with is flexiable to themaze size
-        //temporary = Mathf.RoundToInt(Mathf.Pow((rows*columns),1f/2f));
-        temporary = (Mathf.RoundToInt( Mathf.Pow( (rows*columns), 1f / 2f))+Mathf.RoundToInt( Mathf.Pow((rows+columns) , 1f / 2f)))/2;
-         //temporary = Mathf.RoundToInt(Mathf.Pow((rows+columns),1f/2f));
+        //temporary = Mathf.RoundToInt(Mathf.Pow((x_axis_size*z_axis_size),1f/2f));
+        temporary = (Mathf.RoundToInt( Mathf.Pow( (x_axis_size*z_axis_size), 1f / 2f))+Mathf.RoundToInt( Mathf.Pow((x_axis_size+z_axis_size) , 1f / 2f)))/2;
+         //temporary = Mathf.RoundToInt(Mathf.Pow((x_axis_size+z_axis_size),1f/2f));
         key += temporary.ToString()+";";
         //its will need in the last argument to the algoritm
         int range = (temporary*2)-1;
@@ -114,26 +136,26 @@ public class Mazegenerater : MonoBehaviour
             //first i get the start is on the top or bottun 
             temporary = rnd.Next(2);
             if(temporary==0){//top or bot
-                temporary = rnd.Next(2);//rows and colums i counting by 1 and it is counting by 0 so i need a -1 but random is generat to [0,max) and its int so its cast by down and its max-1 so i need only max in the next lines
+                temporary = rnd.Next(2);//x_axis_size and colums i counting by 1 and it is counting by 0 so i need a -1 but random is generat to [0,max) and its int so its cast by down and its max-1 so i need only max in the next lines
                 if(temporary==0){//top
-                    temporary = rnd.Next(columns);
+                    temporary = rnd.Next(z_axis_size);
                     playerStarterponty= 0;
                     playerStarterpontx= temporary;
                 }else{//bot
-                    temporary = rnd.Next(columns);
-                    playerStarterponty= rows-1;
+                    temporary = rnd.Next(z_axis_size);
+                    playerStarterponty= x_axis_size-1;
                     playerStarterpontx= temporary;
                 }
             }else{//left or right                
                 temporary = rnd.Next(2);
                 if(temporary==0){//left
-                    temporary = rnd.Next(rows);
+                    temporary = rnd.Next(x_axis_size);
                     playerStarterponty=temporary;
                     playerStarterpontx=0;
                 }else{//right
-                    temporary = rnd.Next(rows);//its gives me 0-rows a number
+                    temporary = rnd.Next(x_axis_size);//its gives me 0-x_axis_size a number
                     playerStarterponty= temporary;
-                    playerStarterpontx= columns-1;
+                    playerStarterpontx= z_axis_size-1;
                 }
             }
 
@@ -183,8 +205,8 @@ public class Mazegenerater : MonoBehaviour
         int prey=ListOfThePossiblaStarterPoints[0][1];
         recursiveGenerate(ListOfThePossiblaStarterPoints[0][0],ListOfThePossiblaStarterPoints[0][1],ListOfThePossiblaStarterPoints[0][0],ListOfThePossiblaStarterPoints[0][1],deep);
         ListOfThePossiblaStarterPoints.Clear();
-        for (int i = 0; i < rows; i++){
-            for (int j = 0; j < columns; j++){
+        for (int i = 0; i < x_axis_size; i++){
+            for (int j = 0; j < z_axis_size; j++){
             bool needPutInTheTable=false;
                 if(generateLeft[i,j]==-1){//-1 is meaning the algoritm is now on this cells(the FILO part)
                     if(i==0){
@@ -192,7 +214,7 @@ public class Mazegenerater : MonoBehaviour
                                 needPutInTheTable=true;
                             }
                     }else{
-                        if(i==rows-1){
+                        if(i==x_axis_size-1){
                             if(generateLeft[i-1,j]==0){
                                 needPutInTheTable=true;
                             } 
@@ -208,7 +230,7 @@ public class Mazegenerater : MonoBehaviour
                                 needPutInTheTable=true;
                             }
                     }else{
-                        if(j==(columns-1)){
+                        if(j==(z_axis_size-1)){
                             if(generateLeft[i,j-1]==0){
                                 needPutInTheTable=true;
                             }
@@ -261,8 +283,8 @@ public class Mazegenerater : MonoBehaviour
             ListOfThePossiblaStarterPoints.Clear();
             done = true;
             //its done? and where we start next
-            for (int i = 0; i < rows; i++){
-                for (int j = 0; j < columns; j++){
+            for (int i = 0; i < x_axis_size; i++){
+                for (int j = 0; j < z_axis_size; j++){
                 bool needPutInTheTable=false;
                     if(generateLeft[i,j]==-1){//-1 is meaning the algoritm is now on this cells(the FILO part)
                         if(i==0){
@@ -271,7 +293,7 @@ public class Mazegenerater : MonoBehaviour
                                     needPutInTheTable=true;
                                 }
                         }else{
-                            if(i==rows-1){
+                            if(i==x_axis_size-1){
                                if(generateLeft[i-1,j]==0){
                                     done=false;
                                     needPutInTheTable=true;
@@ -290,7 +312,7 @@ public class Mazegenerater : MonoBehaviour
                                     needPutInTheTable=true;
                                 }
                         }else{
-                            if(j==(columns-1)){
+                            if(j==(z_axis_size-1)){
                                 if(generateLeft[i,j-1]==0){
                                     done=false;
                                     needPutInTheTable=true;
@@ -317,8 +339,8 @@ public class Mazegenerater : MonoBehaviour
     //---------
     /*
     string itemitem="";
-    for (int i = 0; i < rows; i++){
-        for (int j = 0; j < columns; j++){
+    for (int i = 0; i < x_axis_size; i++){
+        for (int j = 0; j < z_axis_size; j++){
             itemitem += ((generateLeft[i,j]==-1)?"c":(generateLeft[i,j]==-2)?"v":"#") + "  ";
         }
         itemitem+="\n";
@@ -335,7 +357,7 @@ public class Mazegenerater : MonoBehaviour
         bool movetonext = false;
         for (int i = 0; i < 15 && !movetonext; i++){
             int next=nextstep();
-            if(algorimusFilo[next]==0){//left
+            if(algorimusFilo[next]==3){//left
                 if((prex!=x-1)&&(x-1>=0)&&(generateLeft[x-1,y]==0)){//its possible
                         basemaze[x,y,0]=false;//current cells left side
                         basemaze[x-1,y,2]=false;//next cells right side
@@ -345,7 +367,7 @@ public class Mazegenerater : MonoBehaviour
                         //Debug.Log("az "+x+" és "+y+" helyröl kitoroljűk a 0 falat:"+basemaze[x,y,0]);
                     }
                 }
-            if(algorimusFilo[next]==1){//up
+            if(algorimusFilo[next]==2){//up
                 if((prey!=y-1)&&(y-1>=0)&&(generateLeft[x,y-1]==0)){//its possible,if its possitiv we cant go there//i dont know why i writed this comment
                     basemaze[x,y,1] = false;//current cells left side
                     basemaze[x,y-1,3] = false;//next cells right side
@@ -355,8 +377,8 @@ public class Mazegenerater : MonoBehaviour
                     recursiveGenerate(x,y,x,y-1,currentRecursivePoinLeft-1);
                 }
             }
-            if(algorimusFilo[next]==2){//right
-                if((prex!=x+1)&&(x+1<rows)&&(generateLeft[x+1,y]==0)){//its possible
+            if(algorimusFilo[next]==1){//right
+                if((prex!=x+1)&&(x+1<x_axis_size)&&(generateLeft[x+1,y]==0)){//its possible
                     basemaze[x,y,2]=false;//current cells left side
                     basemaze[x+1,y,0]=false;//next cells right side
                     generateLeft[x,y]= -1;//-1 => its mean we are now in this filo on there road;
@@ -365,8 +387,8 @@ public class Mazegenerater : MonoBehaviour
                     recursiveGenerate(x,y,x+1,y,currentRecursivePoinLeft-1);
                 }
             }
-            if(algorimusFilo[next]==3){//down
-                if((prey!=y+1)&&(y+1<columns)&&(generateLeft[x,y+1]==0)){//its possible
+            if(algorimusFilo[next]==0){//down
+                if((prey!=y+1)&&(y+1<z_axis_size)&&(generateLeft[x,y+1]==0)){//its possible
                     basemaze[x,y,3]=false;//current cells left side
                     basemaze[x,y+1,1]=false;//next cells right side
                     generateLeft[x,y]= -1;//-1 => its mean we are now in this filo on there road;
@@ -386,7 +408,7 @@ public class Mazegenerater : MonoBehaviour
 
     void generateRoom(){
         //int a=rnd.Next(2,5);
-        int numbersOfRoomsCell = ((rows*columns)/5)-((rows*columns)%5);
+        int numbersOfRoomsCell = ((x_axis_size*z_axis_size)/5)-((x_axis_size*z_axis_size)%5);
         int BigRooms=0;//4x4
         int NormalRoom=0;//3x3
         int SmallRoom=0;//2x2
@@ -408,10 +430,10 @@ public class Mazegenerater : MonoBehaviour
                     numbersOfRoomsCell-=(4*4);
             }
         }
-        roomMap = new int[rows,columns];
+        roomMap = new int[x_axis_size,z_axis_size];
         int roomnumber =1;
-        for (int i = 0; i < rows; i++){
-            for (int j = 0; j < columns; j++){
+        for (int i = 0; i < x_axis_size; i++){
+            for (int j = 0; j < z_axis_size; j++){
                 roomMap[i,j]=0;// no room here
             }
         }
@@ -419,11 +441,11 @@ public class Mazegenerater : MonoBehaviour
         for(int a=BigRooms;a>0;a--){
             bool done=false;
             while(!done){
-            int i = rnd.Next(0,rows-3);
-            int j = rnd.Next(0,columns-3);//pick a random spot
+            int i = rnd.Next(1,x_axis_size-4);
+            int j = rnd.Next(1,z_axis_size-4);//pick a random spot
             done=true;
-            for (int ii = i; ii < i+4; ii++){
-                for (int jj = j; jj < j+4; jj++){
+            for (int ii = i-1; ii < i+5; ii++){
+                for (int jj = j-1; jj < j+5; jj++){
                     if(roomMap[ii,jj]!=0){
                         done=false;
                     }
@@ -432,9 +454,90 @@ public class Mazegenerater : MonoBehaviour
             if(done){
                 for (int ii = i; ii < i+4; ii++){
                     for (int jj = j; jj < j+4; jj++){
-                        //roomMap[ii,jj]=roomnumber;
-                        roomMap[ii,jj]=3;
+                        roomMap[ii,jj]=roomnumber;
+                        generateLeft[ii,jj]= 4;
+                        //inner
+                        if(ii!=i  &&  ii!=i+3  &&  jj!=j  &&  jj!=j+3){
+                            basemaze[ii,jj,0]=false;
+                            basemaze[ii,jj,1]=false;
+                            basemaze[ii,jj,2]=false;
+                            basemaze[ii,jj,3]=false;
+                        }
+                        //border
+                        if(ii == i    && !(jj==j  ||  jj==j+3)){
+                            //basemaze[ii,jj,0]=false;
+                            basemaze[ii,jj,1]=false;
+                            basemaze[ii,jj,2]=false;
+                            basemaze[ii,jj,3]=false;
+                        }
+                        if(ii == i+3  && !(jj==j  ||  jj==j+3)){
+                            basemaze[ii,jj,0]=false;
+                            basemaze[ii,jj,1]=false;
+                            //basemaze[ii,jj,2]=false;
+                            basemaze[ii,jj,3]=false;
+                        }
+                        if(jj == j    && !(ii==i  ||  ii==i+3)){
+                            basemaze[ii,jj,0]=false;
+                            //basemaze[ii,jj,1]=false;
+                            basemaze[ii,jj,2]=false;
+                            basemaze[ii,jj,3]=false;
+                        }
+                        if(jj == j+3  && !(ii==i  ||  ii==i+3)){
+                            basemaze[ii,jj,0]=false;
+                            basemaze[ii,jj,1]=false;
+                            basemaze[ii,jj,2]=false;
+                            //basemaze[ii,jj,3]=false;
+                        }
+                        //corner
+                        if(ii==i    &&  jj==j  ){
+                            //basemaze[ii,jj,0]=false;
+                            //basemaze[ii,jj,1]=false;
+                            basemaze[ii,jj,2]=false;
+                            basemaze[ii,jj,3]=false;
+                        }
+                        if(ii==i+3  &&  jj==j  ){
+                            basemaze[ii,jj,0]=false;
+                            //basemaze[ii,jj,1]=false;
+                            //basemaze[ii,jj,2]=false;
+                            basemaze[ii,jj,3]=false;
+                        }
+                        if(ii==i    &&  jj==j+3){
+                            //basemaze[ii,jj,0]=false;
+                            basemaze[ii,jj,1]=false;
+                            basemaze[ii,jj,2]=false;
+                            //basemaze[ii,jj,3]=false;
+                        }
+                        if(ii==i+3  &&  jj==j+3){
+                            basemaze[ii,jj,0]=false;
+                            basemaze[ii,jj,1]=false;
+                            //basemaze[ii,jj,2]=false;
+                            //basemaze[ii,jj,3]=false;
+                        }
                     }
+                }
+                //door
+                int num=rnd.Next(3);
+                switch (rnd.Next(4)){
+                    case 0://bot
+                        basemaze[i,j+num,0]=false;
+                        basemaze[i-1,j+num,2]=false;
+                        doorMap[i,j+num,0]=true;
+                        break;
+                    case 1://right
+                        basemaze[i+num,j,1]=false;
+                        basemaze[i+num,j-1,3]=false;
+                        doorMap[i+num,j,1]=true;
+                        break;
+                    case 2://top
+                        basemaze[i+3,j+num,2]=false;
+                        basemaze[i+3+1,j+num,0]=false;
+                        doorMap[i+3,j+num,2]=true;
+                        break;
+                    case 3://left
+                        basemaze[i+num,j+3,3]=false;
+                        basemaze[i+num,j+3+1,1]=false;
+                        doorMap[i+num,j+3,3]=true;
+                        break;
                 }
                 roomnumber++;
             }
@@ -444,11 +547,11 @@ public class Mazegenerater : MonoBehaviour
         for(int b=NormalRoom;b>0;b--){
             bool done=false;
             while(!done){
-            int i = rnd.Next(0,rows-2);
-            int j = rnd.Next(0,columns-2);//pick a random spot
+            int i = rnd.Next(1,x_axis_size-3);
+            int j = rnd.Next(1,z_axis_size-3);//pick a random spot
             done=true;
-            for (int ii = i; ii < i+3; ii++){
-                for (int jj = j; jj < j+3; jj++){
+            for (int ii = i-1; ii < i+4; ii++){
+                for (int jj = j-1; jj < j+4; jj++){
                     if(roomMap[ii,jj]!=0){
                         done=false;
                     }
@@ -457,10 +560,93 @@ public class Mazegenerater : MonoBehaviour
             if(done){
                 for (int ii = i; ii < i+3; ii++){
                     for (int jj = j; jj < j+3; jj++){
-                        //roomMap[ii,jj]=roomnumber;
-                        roomMap[ii,jj]=2;
+                        roomMap[ii,jj]=roomnumber;
+                        generateLeft[ii,jj]= 3;
+                        //inner
+                        if(ii!=i  &&  ii!=i+2  &&  jj!=j  &&  jj!=j+2){
+                            basemaze[ii,jj,0]=false;
+                            basemaze[ii,jj,1]=false;
+                            basemaze[ii,jj,2]=false;
+                            basemaze[ii,jj,3]=false;
+                        }
+                        //border
+                        if(ii == i    && !(jj==j  ||  jj==j+2)){
+                            //basemaze[ii,jj,0]=false;
+                            basemaze[ii,jj,1]=false;
+                            basemaze[ii,jj,2]=false;
+                            basemaze[ii,jj,3]=false;
+                        }
+                        if(ii == i+2  && !(jj==j  ||  jj==j+2)){
+                            basemaze[ii,jj,0]=false;
+                            basemaze[ii,jj,1]=false;
+                            //basemaze[ii,jj,2]=false;
+                            basemaze[ii,jj,3]=false;
+                        }
+                        if(jj == j    && !(ii==i  ||  ii==i+2)){
+                            basemaze[ii,jj,0]=false;
+                            //basemaze[ii,jj,1]=false;
+                            basemaze[ii,jj,2]=false;
+                            basemaze[ii,jj,3]=false;
+                        }
+                        if(jj == j+2  && !(ii==i  ||  ii==i+2)){
+                            basemaze[ii,jj,0]=false;
+                            basemaze[ii,jj,1]=false;
+                            basemaze[ii,jj,2]=false;
+                            //basemaze[ii,jj,3]=false;
+                        }
+                        //corner
+                        if(ii==i    &&  jj==j  ){
+                            //basemaze[ii,jj,0]=false;
+                            //basemaze[ii,jj,1]=false;
+                            basemaze[ii,jj,2]=false;
+                            basemaze[ii,jj,3]=false;
+                        }
+                        if(ii==i+2  &&  jj==j  ){
+                            basemaze[ii,jj,0]=false;
+                            //basemaze[ii,jj,1]=false;
+                            //basemaze[ii,jj,2]=false;
+                            basemaze[ii,jj,3]=false;
+                        }
+                        if(ii==i    &&  jj==j+2){
+                            //basemaze[ii,jj,0]=false;
+                            basemaze[ii,jj,1]=false;
+                            basemaze[ii,jj,2]=false;
+                            //basemaze[ii,jj,3]=false;
+                        }
+                        if(ii==i+2  &&  jj==j+2){
+                            basemaze[ii,jj,0]=false;
+                            basemaze[ii,jj,1]=false;
+                            //basemaze[ii,jj,2]=false;
+                            //basemaze[ii,jj,3]=false;
+                        }
+
+                        
                     
                     }
+                }
+                //door
+                int num=rnd.Next(2);
+                switch (rnd.Next(4)){
+                    case 0://bot
+                        basemaze[i,j+num,0]=false;
+                        basemaze[i-1,j+num,2]=false;
+                        doorMap[i,j+num,0]=true;
+                        break;
+                    case 1://right
+                        basemaze[i+num,j,1]=false;
+                        basemaze[i+num,j-1,3]=false;
+                        doorMap[i+num,j,1]=true;
+                        break;
+                    case 2://top
+                        basemaze[i+2,j+num,2]=false;
+                        basemaze[i+2+1,j+num,0]=false;
+                        doorMap[i+2,j+num,2]=true;
+                        break;
+                    case 3://left
+                        basemaze[i+num,j+2,3]=false;
+                        basemaze[i+num,j+2+1,1]=false;
+                        doorMap[i+num,j+2,3]=true;
+                        break;
                 }
                 roomnumber++;
             }
@@ -470,11 +656,11 @@ public class Mazegenerater : MonoBehaviour
         for(int c=SmallRoom;c>0;c--){
             bool done=false;
             while(!done){
-            int i = rnd.Next(0,rows-1);
-            int j = rnd.Next(0,columns-1);//pick a random spot
+            int i = rnd.Next(1,x_axis_size-2);
+            int j = rnd.Next(1,z_axis_size-2);//pick a random spot
             done=true;
-            for (int ii = i; ii < i+2; ii++){
-                for (int jj = j; jj < j+2; jj++){
+            for (int ii = i-1; ii < i+3; ii++){
+                for (int jj = j-1; jj < j+3; jj++){
                     if(roomMap[ii,jj]!=0){
                         done=false;
                     }
@@ -483,17 +669,66 @@ public class Mazegenerater : MonoBehaviour
             if(done){
                 for (int ii = i; ii < i+2; ii++){
                     for (int jj = j; jj < j+2; jj++){
-                        //roomMap[ii,jj]=roomnumber;
-                        roomMap[ii,jj]=1;
+                        roomMap[ii,jj]=roomnumber;
+                        generateLeft[ii,jj]= 2;
+                        //corner
+                        if(ii==i    &&  jj==j  ){
+                            //basemaze[ii,jj,0]=false;
+                            //basemaze[ii,jj,1]=false;
+                            basemaze[ii,jj,2]=false;
+                            basemaze[ii,jj,3]=false;
+                        }
+                        if(ii==i+1  &&  jj==j  ){
+                            basemaze[ii,jj,0]=false;
+                            //basemaze[ii,jj,1]=false;
+                            //basemaze[ii,jj,2]=false;
+                            basemaze[ii,jj,3]=false;
+                        }
+                        if(ii==i    &&  jj==j+1){
+                            //basemaze[ii,jj,0]=false;
+                            basemaze[ii,jj,1]=false;
+                            basemaze[ii,jj,2]=false;
+                            //basemaze[ii,jj,3]=false;
+                        }
+                        if(ii==i+1  &&  jj==j+1){
+                            basemaze[ii,jj,0]=false;
+                            basemaze[ii,jj,1]=false;
+                            //basemaze[ii,jj,2]=false;
+                            //basemaze[ii,jj,3]=false;
+                        }
                     }
+                }
+                //door
+                int num=rnd.Next(0,1);
+                switch (rnd.Next(4)){
+                    case 0://bot
+                        basemaze[i,j+num,0]=false;
+                        basemaze[i-1,j+num,2]=false;
+                        doorMap[i,j+num,0]=true;
+                        break;
+                    case 1://right
+                        basemaze[i+num,j,1]=false;
+                        basemaze[i+num,j-1,3]=false;
+                        doorMap[i+num,j,1]=true;
+                        break;
+                    case 2://top
+                        basemaze[i+1,j+num,2]=false;
+                        basemaze[i+1+1,j+num,0]=false;
+                        doorMap[i+1,j+num,2]=true;
+                        break;
+                    case 3://left
+                        basemaze[i+num,j+1,3]=false;
+                        basemaze[i+num,j+1+1,1]=false;
+                        doorMap[i+num,j+1,3]=true;
+                        break;
                 }
                 roomnumber++;
             }
             }
         }
         string itemitem="";
-        for (int i = 0; i < rows; i++){
-            for (int j = 0; j < columns; j++){
+        for (int i = 0; i < x_axis_size; i++){
+            for (int j = 0; j < z_axis_size; j++){
                 itemitem += roomMap[i,j]+" ";
             }   
             itemitem+="\n";
