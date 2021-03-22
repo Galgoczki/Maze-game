@@ -4,6 +4,16 @@ using UnityEngine;
 
 public class Mazegenerater : MonoBehaviour
 {
+    private GameObject chair;
+    private GameObject book;
+    private GameObject bookshelf;
+    private GameObject desk;
+    private GameObject card;
+    private GameObject torch;
+    private GameObject table_candle;
+    private GameObject enemyfolder;
+
+
     private GameObject dogGO;
     private Dog dogscript;
     [SerializeField]private Transform playersTransforms;
@@ -11,15 +21,19 @@ public class Mazegenerater : MonoBehaviour
     [SerializeField]private Vector3 playerStarterpont;
     [SerializeField]private bool keyalreadygiven = false;
     private System.Random rnd = new System.Random();
-    [SerializeField]private GameObject floor;
-    [SerializeField]private GameObject roof;
-    [SerializeField]private GameObject wall;
-    [SerializeField]private GameObject floors;
-    [SerializeField]private GameObject roofs;
-    [SerializeField]private GameObject walls;
-    [SerializeField]private bool[,,] basemaze;
-    [SerializeField]private bool[,,] doorMap;
-    [SerializeField]private int[,] roomMap;
+    private GameObject floor;
+    private GameObject roof;
+    private GameObject roof_room;
+    private GameObject wall;
+    private GameObject wall_whitout_door;
+    private GameObject wall_whit_torch;
+    private GameObject floors;
+    private GameObject roofs;
+    private GameObject walls;
+    private bool[,,] basemaze;
+    private bool[,,] doorMap;
+    private int[,] roomMap;
+    private float [,] roomsmid;
     //    _2_default
     // 3 |   | 1       its the cells wall numbers
     //   |_0_|
@@ -34,19 +48,42 @@ public class Mazegenerater : MonoBehaviour
     private bool generateDone = false;
     private int[] algorimusFilo;
     private int positionInTheFiloArray = 0;
+
+    private int endi=0;
+    private int endj=0;
     // Start is called before the first frame update
     void Start(){
 
 
-        //dogGO = GameObject.Find("dog");
+        dogGO = GameObject.Find("Dog");
+        floors = GameObject.Find("floors");
+        roofs = GameObject.Find("roofs");
+        walls = GameObject.Find("walls");
+        enemyfolder = GameObject.Find("enemyfolder");
+        chair = (GameObject)Resources.Load("prefab/chair", typeof(GameObject));
+        book = (GameObject)Resources.Load("prefab/book", typeof(GameObject));
+        bookshelf = (GameObject)Resources.Load("prefab/bookshelf", typeof(GameObject));
+        desk = (GameObject)Resources.Load("prefab/desk", typeof(GameObject));
+        card = (GameObject)Resources.Load("prefab/card", typeof(GameObject));
+        wall_whitout_door = (GameObject)Resources.Load("prefab/wall_whitout_door", typeof(GameObject));
+        wall_whit_torch = (GameObject)Resources.Load("prefab/wall_blender_torch", typeof(GameObject));
+        wall = (GameObject)Resources.Load("prefab/wall_blender", typeof(GameObject));
+        floor = (GameObject)Resources.Load("prefab/floor", typeof(GameObject));
+        roof_room = (GameObject)Resources.Load("prefab/roof_room", typeof(GameObject));
+        roof = (GameObject)Resources.Load("prefab/roof", typeof(GameObject));
+        table_candle = (GameObject)Resources.Load("prefab/table_candle", typeof(GameObject));
+        
+        
         //dogscript = dogGO.GetComponent<Dog>();
 
 
-        x_axis_size    = rnd.Next(10,40);
+        x_axis_size = rnd.Next(10,40);
         z_axis_size = rnd.Next(10,40);
 
         basemaze = new bool[x_axis_size,z_axis_size,4];
         doorMap = new bool[x_axis_size,z_axis_size,4];
+        endi=x_axis_size-1;
+        endj=z_axis_size-1;
         generateLeft = new short[x_axis_size,z_axis_size];
         for (int i = 0; i < x_axis_size; i++){
             for (int j = 0; j < z_axis_size; j++){
@@ -67,39 +104,169 @@ public class Mazegenerater : MonoBehaviour
         }
 
         generateRoom();
-
+        int roomcounter=0;
         generate();
+
+        Instantiate(dogGO,new Vector3(starterpoint.x+(0*fullcellsize)+fullcellsize/2,               starterpoint.y+1.5f,    starterpoint.z+((z_axis_size-1)*fullcellsize)-fullcellsize/2) ,Quaternion.identity,enemyfolder.transform);
+        Instantiate(dogGO,new Vector3(starterpoint.x+((x_axis_size-1)*fullcellsize)+fullcellsize/2,     starterpoint.y+1.5f,    starterpoint.z+(0*fullcellsize)-fullcellsize/2)           ,Quaternion.identity,enemyfolder.transform);
+
         for (int i = 0; i < x_axis_size; i++){//x
+            int offseti = i%2;
             for (int j = 0; j < z_axis_size; j++){//y
+                int offsetj = j%2;
                 //floor
+                bool light= false;
                 Instantiate(floor,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2,starterpoint.y-0.5f,starterpoint.z+(j*fullcellsize)-fullcellsize/2),Quaternion.identity,floors.transform);
-                
-                //roof
-                //Instantiate(roof,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2,starterpoint.y+5.5f,starterpoint.z+(j*fullcellsize)-fullcellsize/2),Quaternion.identity,roofs.transform);
-                //walls 
-                if(basemaze[i,j,0]){// left - down
-                    Instantiate(wall,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2-3.25f       ,starterpoint.y+2.5f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2)            ,Quaternion.Euler(0f,270f,0f),walls.transform); 
+                if(roomMap[i,j]!=0){//its a room
+                    if((offseti==1 || offsetj==1 )&&(offseti!=offsetj)){
+                        Instantiate(roof_room,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2,starterpoint.y+5.5f,starterpoint.z+(j*fullcellsize)-fullcellsize/2),Quaternion.identity,roofs.transform);
+                    }else{
+                        Instantiate(roof,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2,starterpoint.y+5.5f,starterpoint.z+(j*fullcellsize)-fullcellsize/2),Quaternion.identity,roofs.transform);
+                    }
+                   
+                    if(basemaze[i,j,0]){// left - down
+                        Instantiate(wall,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2-3.25f       ,starterpoint.y+2.5f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2)            ,Quaternion.Euler(-90f,270f,0f),walls.transform); 
+                        if(!basemaze[i,j,1]){
+                            Instantiate(bookshelf,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2-3.25f+1f       ,starterpoint.y+2f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2-1.5f)            ,Quaternion.Euler(-90f,270f,0f),walls.transform); 
+                        }else{
+                            Instantiate(bookshelf,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2-3.25f+2f       ,starterpoint.y+2f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2-1f)            ,Quaternion.Euler(-90f,-135f,0f),walls.transform);//-
+                        }
+                        if(basemaze[i,j,3]){
+                            //HÁRMAS DOLGA AZ A SZEKRÉNY   capsry
+                        }else{
+                            Instantiate(bookshelf,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2-3.25f+1f       ,starterpoint.y+2f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2+1.5f)            ,Quaternion.Euler(-90f,270f,0f),walls.transform); 
+                        }
+                        
+                    }
+                    if(basemaze[i,j,1]){// top - right
+                        Instantiate(wall,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2             ,starterpoint.y+2.5f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2-3.25f)      ,Quaternion.Euler(-90f,180f,0f),walls.transform);
+                        if(!basemaze[i,j,2]){
+                            Instantiate(bookshelf,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2+1.5f       ,starterpoint.y+2f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2-3.25f+1f)            ,Quaternion.Euler(-90f,180f,0f),walls.transform); 
+                       
+                        }else{
+                            Instantiate(bookshelf,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2+1f       ,starterpoint.y+2f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2-3.25f+2f)            ,Quaternion.Euler(-90f,135,0f),walls.transform); //-
+                       
+                        }
+                        if(basemaze[i,j,0]){
+                            //NULLLÁS DOLGA AZ A SZEKRÉNY   capsry
+                        }else{
+                           Instantiate(bookshelf,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2-1.5f       ,starterpoint.y+2f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2-3.25f+1f)            ,Quaternion.Euler(-90f,180f,0f),walls.transform); 
+                         
+                        }
+                        
+                    }
+                    if(basemaze[i,j,2]){// right -top
+                        Instantiate(wall,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2+3.25f       ,starterpoint.y+2.5f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2)            ,Quaternion.Euler(-90f,90f,0f),walls.transform);
+                        if(!basemaze[i,j,3]){
+                            Instantiate(bookshelf,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2+3.25f-1f       ,starterpoint.y+2f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2+1.5f)            ,Quaternion.Euler(-90f,90f,0f),walls.transform); 
+                    
+                        }else{
+                            Instantiate(bookshelf,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2+3.25f-2F       ,starterpoint.y+2f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2+1f)            ,Quaternion.Euler(-90f,45f,0f),walls.transform); //-
+                    
+                        }
+                        if(basemaze[i,j,1]){
+                            //EGYES DOLGA AZ A SZEKRÉNY   capsry
+                        }else{
+                           Instantiate(bookshelf,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2+3.25f-1f       ,starterpoint.y+2f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2-1.5f)            ,Quaternion.Euler(-90f,90f,0f),walls.transform); 
+                        
+                        }
+                        
+                    }
+                    if(basemaze[i,j,3]){// down - left
+                        Instantiate(wall,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2             ,starterpoint.y+2.5f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2+3.25f)      ,Quaternion.Euler(-90f,180f,0f),walls.transform);
+                        if(!basemaze[i,j,0]){
+                            Instantiate(bookshelf,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2-1.5f       ,starterpoint.y+2f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2+3.25f-1f)            ,Quaternion.Euler(-90f,0f,0f),walls.transform); 
+                        
+                        }else{
+                            Instantiate(bookshelf,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2-1       ,starterpoint.y+2f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2+3.25f-2.1f)            ,Quaternion.Euler(-90f,-45f,0f),walls.transform); //-
+                        
+                        }
+                        if(basemaze[i,j,2]){
+                            //KETTES DOLGA AZ A SZEKRÉNY   capsry
+                        }else{
+                          Instantiate(bookshelf,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2+1.5f       ,starterpoint.y+2f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2+3.25f-1f)            ,Quaternion.Euler(-90f,0f,0f),walls.transform); 
+                     
+                        }
+                        
+                    }
+                    if(doorMap[i,j,0]){
+                        Instantiate(wall_whitout_door,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2-3.5f       ,starterpoint.y+2.5f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2)            ,Quaternion.Euler(-90f,270f,0f),walls.transform); 
+                    }
+                    if(doorMap[i,j,1]){
+                        Instantiate(wall_whitout_door,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2             ,starterpoint.y+2.5f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2-3.5f)      ,Quaternion.Euler(-90f,180f,0f),walls.transform);
+                    }
+                    if(doorMap[i,j,2]){
+                        Instantiate(wall_whitout_door,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2+3.5f       ,starterpoint.y+2.5f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2)            ,Quaternion.Euler(-90f,90f,0f),walls.transform);
+                    }
+                    if(doorMap[i,j,3]){
+                        Instantiate(wall_whitout_door,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2             ,starterpoint.y+2.5f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2+3.5f)      ,Quaternion.Euler(-90f,0f,0f),walls.transform);
+                    }
+
+                }else{//its a maze element
+                    //roof
+                    Instantiate(roof,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2,starterpoint.y+5.5f,starterpoint.z+(j*fullcellsize)-fullcellsize/2),Quaternion.identity,roofs.transform);
+                    ///walls 
+                    if(basemaze[i,j,0]){// left - down
+                        if(!light){
+                            Instantiate(wall_whit_torch,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2-3.25f       ,starterpoint.y+2.5f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2)            ,Quaternion.Euler(-90f,270f,0f),walls.transform); 
+                            light=true;
+                        }else{
+                            Instantiate(wall,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2-3.25f       ,starterpoint.y+2.5f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2)            ,Quaternion.Euler(-90f,270f,0f),walls.transform); 
+                        }
+                    }
+                    if(basemaze[i,j,1]){// top - right
+                        if(!light){
+                           Instantiate(wall_whit_torch,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2             ,starterpoint.y+2.5f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2-3.25f)      ,Quaternion.Euler(-90f,180f,0f),walls.transform);
+                            light=true;
+                        }else{
+                            Instantiate(wall,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2             ,starterpoint.y+2.5f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2-3.25f)      ,Quaternion.Euler(-90f,180f,0f),walls.transform);
+                        }
+                    }
+                    if(basemaze[i,j,2]&& !(endi==i&&endj==j)){// right -top
+                        if(!light){
+                            Instantiate(wall_whit_torch,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2+3.25f       ,starterpoint.y+2.5f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2)            ,Quaternion.Euler(-90f,90f,0f),walls.transform);
+                            light=true;
+                        }else{
+                            Instantiate(wall,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2+3.25f       ,starterpoint.y+2.5f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2)            ,Quaternion.Euler(-90f,90f,0f),walls.transform);
+                        }
+                    }
+                    if(basemaze[i,j,3]&& !(endi==i&&endj==j)){// down - left
+                        if(!light){
+                            Instantiate(wall_whit_torch,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2             ,starterpoint.y+2.5f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2+3.25f)      ,Quaternion.Euler(-90f,0f,0f),walls.transform);
+                            light=true;
+                        }else{
+                            Instantiate(wall,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2             ,starterpoint.y+2.5f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2+3.25f)      ,Quaternion.Euler(-90f,0f,0f),walls.transform);
+                        }
+                    }
                 }
-                if(basemaze[i,j,1]){// top - right
-                    Instantiate(wall,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2             ,starterpoint.y+2.5f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2-3.25f)      ,Quaternion.Euler(0f,0f,0f),walls.transform);
+
+            }
+        }
+        for (int index = 0; index < (roomsmid.Length/2); index++){
+            int temporary = rnd.Next(2);
+            if(temporary==0){
+                Instantiate(desk,new Vector3(starterpoint.x+(roomsmid[index,0]*fullcellsize)             ,starterpoint.y+0.35f        ,starterpoint.z+((roomsmid[index,1]-1)*fullcellsize))      ,Quaternion.Euler(-90f,0f,0f),walls.transform);
+                Instantiate(table_candle,new Vector3(starterpoint.x+(roomsmid[index,0]*fullcellsize)+Random.Range(-0.8f, 0.8f)             ,starterpoint.y+1.08f        ,starterpoint.z+((roomsmid[index,1]-1)*fullcellsize)+Random.Range(-0.32f, 0.32f))      ,Quaternion.Euler(-90f,0f,0f),walls.transform);
+                temporary = rnd.Next(2);
+                if(temporary==0){
+                    Instantiate(chair,new Vector3(starterpoint.x+(roomsmid[index,0]*fullcellsize)+0.4f             ,starterpoint.y+0.35f        ,starterpoint.z+((roomsmid[index,1]-1)*fullcellsize)+1.3f)      ,Quaternion.Euler(-90f,180f,0f),walls.transform);
+                    
+                }else{
+                    Instantiate(chair,new Vector3(starterpoint.x+(roomsmid[index,0]*fullcellsize)+0.4f             ,starterpoint.y+0.35f        ,starterpoint.z+((roomsmid[index,1]-1)*fullcellsize)-1.3f)      ,Quaternion.Euler(-90f,0,0f),walls.transform);
+
                 }
-                if(basemaze[i,j,2]){// right -top
-                    Instantiate(wall,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2+3.25f       ,starterpoint.y+2.5f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2)            ,Quaternion.Euler(0f,90f,0f),walls.transform);
-                }
-                if(basemaze[i,j,3]){// down - left
-                    Instantiate(wall,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2             ,starterpoint.y+2.5f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2+3.25f)      ,Quaternion.Euler(0f,180f,0f),walls.transform);
-                }
-                if(doorMap[i,j,0]){
-                    Instantiate(wall,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2-3.25f       ,starterpoint.y+12.5f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2)            ,Quaternion.Euler(0f,270f,0f),walls.transform); 
-                }
-                if(doorMap[i,j,1]){
-                    Instantiate(wall,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2             ,starterpoint.y+12.5f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2-3.25f)      ,Quaternion.Euler(0f,0f,0f),walls.transform);
-                }
-                if(doorMap[i,j,2]){
-                    Instantiate(wall,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2+3.25f       ,starterpoint.y+12.5f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2)            ,Quaternion.Euler(0f,90f,0f),walls.transform);
-                }
-                if(doorMap[i,j,3]){
-                    Instantiate(wall,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2             ,starterpoint.y+12.5f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2+3.25f)      ,Quaternion.Euler(0f,180f,0f),walls.transform);
+            }else{           
+                Instantiate(desk,new Vector3(starterpoint.x+(roomsmid[index,0]*fullcellsize)                 ,starterpoint.y+0.35f               ,starterpoint.z+((roomsmid[index,1]-1)*fullcellsize))      ,Quaternion.Euler(-90f,90f,0f),walls.transform);   
+                Instantiate(table_candle,new Vector3(starterpoint.x+(roomsmid[index,0]*fullcellsize)+Random.Range(-0.32f, 0.32f)                 ,starterpoint.y+1.08f               ,starterpoint.z+((roomsmid[index,1]-1)*fullcellsize)+Random.Range(-0.8f, 0.8f))      ,Quaternion.Euler(-90f,0f,0f),walls.transform);   
+                temporary = rnd.Next(2);
+                if(temporary==0){
+                    Instantiate(chair,new Vector3(starterpoint.x+(roomsmid[index,0]*fullcellsize)+1.4f            ,starterpoint.y+0.35f          ,starterpoint.z+((roomsmid[index,1]-1)*fullcellsize)+0.5f)      ,Quaternion.Euler(-90f,270f,0f),walls.transform);
+                     
+                    
+                }else{
+                    Instantiate(chair,new Vector3(starterpoint.x+(roomsmid[index,0]*fullcellsize)-2f            ,starterpoint.y+0.35f          ,starterpoint.z+((roomsmid[index,1]-1)*fullcellsize)-0.5f)      ,Quaternion.Euler(-90f,90f,0f),walls.transform);
+                        
+
                 }
             }
         }
@@ -145,6 +312,7 @@ public class Mazegenerater : MonoBehaviour
                     temporary = rnd.Next(z_axis_size);
                     playerStarterponty= x_axis_size-1;
                     playerStarterpontx= temporary;
+
                 }
             }else{//left or right                
                 temporary = rnd.Next(2);
@@ -186,6 +354,7 @@ public class Mazegenerater : MonoBehaviour
         List<int[]> ListOfThePossiblaStarterPoints = new List<int[]>(); //its will be the list of the point where the algoritm possible start to grow the maze
         ListOfThePossiblaStarterPoints.Add(new int[2]{int.Parse(temporarystringholder2[0]),int.Parse(temporarystringholder2[1])});
         playerStarterpont = new Vector3(starterpoint.x+(ListOfThePossiblaStarterPoints[0][0]*fullcellsize)+fullcellsize/2,starterpoint.y+1.5f,starterpoint.z+(ListOfThePossiblaStarterPoints[0][1]*fullcellsize)-fullcellsize/2);
+        playerStarterpont = new Vector3(starterpoint.x+(0*fullcellsize)+fullcellsize/2,starterpoint.y+1.5f,starterpoint.z+(0*fullcellsize)-fullcellsize/2);
         //the first element of this list is the point where we start the maze generat and its the starter point of the player
         
         temporarystringholder2=temporarystringholder[3].Split(',');//4th part of the key and yet the last
@@ -437,7 +606,8 @@ public class Mazegenerater : MonoBehaviour
                 roomMap[i,j]=0;// no room here
             }
         }
-
+        roomsmid=new float[BigRooms+NormalRoom+SmallRoom,2];
+        int roomsmidindex=0;
         for(int a=BigRooms;a>0;a--){
             bool done=false;
             while(!done){
@@ -452,6 +622,9 @@ public class Mazegenerater : MonoBehaviour
                 }
             }
             if(done){
+                roomsmid[roomsmidindex,0]=i+2f;
+                roomsmid[roomsmidindex,1]=j+2f;
+                roomsmidindex++;
                 for (int ii = i; ii < i+4; ii++){
                     for (int jj = j; jj < j+4; jj++){
                         roomMap[ii,jj]=roomnumber;
@@ -558,6 +731,9 @@ public class Mazegenerater : MonoBehaviour
                 }
             }
             if(done){
+                roomsmid[roomsmidindex,0]=i+1.5f;
+                roomsmid[roomsmidindex,1]=j+1.5f;
+                roomsmidindex++;
                 for (int ii = i; ii < i+3; ii++){
                     for (int jj = j; jj < j+3; jj++){
                         roomMap[ii,jj]=roomnumber;
@@ -667,6 +843,9 @@ public class Mazegenerater : MonoBehaviour
                 }
             }
             if(done){
+                roomsmid[roomsmidindex,0]=i+1f;
+                roomsmid[roomsmidindex,1]=j+1f;
+                roomsmidindex++;
                 for (int ii = i; ii < i+2; ii++){
                     for (int jj = j; jj < j+2; jj++){
                         roomMap[ii,jj]=roomnumber;
@@ -734,6 +913,7 @@ public class Mazegenerater : MonoBehaviour
             itemitem+="\n";
         }
         Debug.Log(itemitem);
+        Debug.Log(roomsmidindex);
     }
 
     int nextstep(){

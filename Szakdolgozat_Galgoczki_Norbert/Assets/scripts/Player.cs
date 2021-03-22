@@ -1,9 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
+    private Text text;
     public Transform kamera;
     public Transform playerBody;
     public Transform groundCheck;
@@ -26,6 +28,8 @@ public class Player : MonoBehaviour
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;//the cursor is dont go out off the screen
+        text = GameObject.Find("UIszoveg").GetComponent<Text>();
+
     }
 
     // Update is called once per frame
@@ -62,5 +66,11 @@ public class Player : MonoBehaviour
         movegravity.y += gravitysize * Time.deltaTime;
 
         controller.Move(movegravity*Time.deltaTime);
+
+        //----------------
+        //text.text="Hello"+movegravity.y;
+    
+
+
     }
 }
