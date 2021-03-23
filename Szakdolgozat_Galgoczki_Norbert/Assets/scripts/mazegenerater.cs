@@ -30,6 +30,8 @@ public class Mazegenerater : MonoBehaviour
     private GameObject floors;
     private GameObject roofs;
     private GameObject walls;
+    private GameObject door_frame;
+    private GameObject door_inner;
     private bool[,,] basemaze;
     private bool[,,] doorMap;
     private int[,] roomMap;
@@ -72,7 +74,8 @@ public class Mazegenerater : MonoBehaviour
         roof_room = (GameObject)Resources.Load("prefab/roof_room", typeof(GameObject));
         roof = (GameObject)Resources.Load("prefab/roof", typeof(GameObject));
         table_candle = (GameObject)Resources.Load("prefab/table_candle", typeof(GameObject));
-        
+        door_frame = (GameObject)Resources.Load("prefab/door_frame", typeof(GameObject));
+        door_inner = (GameObject)Resources.Load("prefab/door", typeof(GameObject));
         
         //dogscript = dogGO.GetComponent<Dog>();
 
@@ -191,15 +194,27 @@ public class Mazegenerater : MonoBehaviour
                     }
                     if(doorMap[i,j,0]){
                         Instantiate(wall_whitout_door,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2-3.5f       ,starterpoint.y+2.5f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2)            ,Quaternion.Euler(-90f,270f,0f),walls.transform); 
+                        Instantiate(door_frame,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2-3.5f       ,starterpoint.y+1.35f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2)            ,Quaternion.Euler(-90f,270f,0f),walls.transform); 
+                        Instantiate(door_inner,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2-3.6f       ,starterpoint.y+1.23f                ,starterpoint.z+(j*fullcellsize)-fullcellsize/2-0.06f)            ,Quaternion.Euler(-90f,270f,0f),walls.transform); 
+                        
                     }
                     if(doorMap[i,j,1]){
                         Instantiate(wall_whitout_door,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2             ,starterpoint.y+2.5f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2-3.5f)      ,Quaternion.Euler(-90f,180f,0f),walls.transform);
+                        Instantiate(door_frame,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2             ,starterpoint.y+1.35f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2-3.5f)      ,Quaternion.Euler(-90f,180f,0f),walls.transform);
+                        Instantiate(door_inner,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2+0.06f             ,starterpoint.y+1.23f               ,starterpoint.z+(j*fullcellsize)-fullcellsize/2-3.66f)      ,Quaternion.Euler(-90f,180f,0f),walls.transform);
+                    
                     }
                     if(doorMap[i,j,2]){
                         Instantiate(wall_whitout_door,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2+3.5f       ,starterpoint.y+2.5f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2)            ,Quaternion.Euler(-90f,90f,0f),walls.transform);
+                        Instantiate(door_frame,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2+3.5f       ,starterpoint.y+1.35f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2)            ,Quaternion.Euler(-90f,90f,0f),walls.transform);
+                        Instantiate(door_inner,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2+3.6f       ,starterpoint.y+1.23f                ,starterpoint.z+(j*fullcellsize)-fullcellsize/2+0.06f)            ,Quaternion.Euler(-90f,90f,0f),walls.transform);
+                    
                     }
                     if(doorMap[i,j,3]){
                         Instantiate(wall_whitout_door,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2             ,starterpoint.y+2.5f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2+3.5f)      ,Quaternion.Euler(-90f,0f,0f),walls.transform);
+                        Instantiate(door_frame,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2             ,starterpoint.y+1.35f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2+3.5f)      ,Quaternion.Euler(-90f,0f,0f),walls.transform);
+                        Instantiate(door_inner,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2-0.06f             ,starterpoint.y+1.23f               ,starterpoint.z+(j*fullcellsize)-fullcellsize/2+3.6f)      ,Quaternion.Euler(-90f,0f,0f),walls.transform);
+                    
                     }
 
                 }else{//its a maze element
@@ -364,7 +379,11 @@ public class Mazegenerater : MonoBehaviour
         }
         //key read is done,we can start the algoritm
 
-        playersTransforms.position = playerStarterpont;
+
+        //karakter a jobb alsó sarokban kezd
+        //playersTransforms.position = playerStarterpont;
+
+
         bool done=false;
         /*foreach (var a in algorimusFilo)
         {

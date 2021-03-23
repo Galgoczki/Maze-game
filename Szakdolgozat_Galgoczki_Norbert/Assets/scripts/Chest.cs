@@ -17,7 +17,8 @@ public class Chest : MonoBehaviour
         
     }
 
-    void open_chast(){
-        animator.SetTrigger("openTrigger");
+    public void open_chest(){
+        Debug.Log("levesz");
+        Destroy(this.gameObject);
     }
 }
