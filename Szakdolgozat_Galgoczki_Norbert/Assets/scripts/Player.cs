@@ -178,8 +178,26 @@ public class Player : MonoBehaviour
 
         text_csont.text = "csontok:" + bone_number;
         text_cd.text =(usedelay<=0.001f)?"":"a következö cselekedetig ennyit kell várnod "+((usedelay-usedelay%0.5)+0.5)+"sec";
+
+        /*
+        if (Input.GetKey("escape")){
+            Cursor.lockState = CursorLockMode.None;//the cursor is dont go out off the screen
+            Cursor.visible = true;
+            //SceneManager.LoadScene(1);
+            mazegenerator.reset();
+            SceneManager.LoadScene(0);
+        }
+        */
     }
-    
+    private void OnTriggerEnter(Collider other){
+        //cellába belépés ->cella script-> kutyának elküld pozicio
+        Cell cell =other.gameObject.GetComponent<Cell>();
+        if(cell != null){
+            cell.playerEnter();
+        }
+
+
+    }
     private void OnTriggerStay(Collider other){//a végső szoba terűletén van csak triggeres collider
         if(other.gameObject.name==end.name+"(Clone)"){
             //Debug.Log("benne van");
@@ -198,6 +216,12 @@ public class Player : MonoBehaviour
      private void OnTriggerExit(Collider other){//a végső szoba terűletén van csak triggeres collider
         if(other.gameObject.name==end.name+"(Clone)"){
             end_text.text="";
+        }
+        //cellába kilép ->cella script-> kutyának elküld az invalid pozicio
+        //amig invalig a pozicio addig nem megy a következö node-ra és ha uj cellába lépűnk akkor  és a kutya elérte a következö nodeot akkor A* ujra számolás
+        Cell cell =other.gameObject.GetComponent<Cell>();
+        if(cell != null){
+            cell.playerExit();
         }
     }
     

@@ -12,6 +12,8 @@ public class Cell : MonoBehaviour
     public void registrat(Dog firstDog,Dog secundDog,int i,int j){
         dog1=firstDog;
         dog2=secundDog;
+        my_position_i=i;
+        my_position_j=j;
     }
     public void playerEnter(){
         dog1.setPlayerPosition(my_position_i,my_position_j);

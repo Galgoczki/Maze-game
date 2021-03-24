@@ -17,7 +17,9 @@ public class Mazegenerater : MonoBehaviour
 
 
     private GameObject dogGO;
-    private Dog dogscript;
+    //private Dog dogscript;
+    private Dog dogscript_entity_1;
+    private Dog dogscript_entity_2;
     [SerializeField]private Transform playersTransforms;
     public string key;//where we start the generat;how deep is the FILO go;where is the player start ;wher the filo is step;
     [SerializeField]private Vector3 playerStarterpont;
@@ -117,16 +119,25 @@ public class Mazegenerater : MonoBehaviour
         generateRoom();
         int roomcounter=0;
         generate();
-        GameObject temporary_sexy;
-        temporary_sexy=Instantiate(dogGO,new Vector3(starterpoint.x+(0*fullcellsize)+fullcellsize/2,               starterpoint.y+1.5f,    starterpoint.z+((z_axis_size-1)*fullcellsize)-fullcellsize/2) ,Quaternion.identity,enemyfolder.transform);
-        dogscript=temporary_sexy.GetComponent<Dog>();
-        dogscript.say_hi(1);
-        dogscript.setMaze(basemaze,x_axis_size,z_axis_size);
-        temporary_sexy=Instantiate(dogGO,new Vector3(starterpoint.x+((x_axis_size-1)*fullcellsize)+fullcellsize/2,     starterpoint.y+1.5f,    starterpoint.z+(0*fullcellsize)-fullcellsize/2)           ,Quaternion.identity,enemyfolder.transform);
-        dogscript=temporary_sexy.GetComponent<Dog>();
-        dogscript.say_hi(2);
-        dogscript.setMaze(basemaze,x_axis_size,z_axis_size);
 
+        GameObject temporary_sexy;
+
+        temporary_sexy=Instantiate(dogGO,new Vector3(starterpoint.x+(0*fullcellsize)+fullcellsize/2,               starterpoint.y+1.5f,    starterpoint.z+((z_axis_size-1)*fullcellsize)-fullcellsize/2) ,Quaternion.identity,enemyfolder.transform);
+        
+        dogscript_entity_1=temporary_sexy.GetComponent<Dog>();
+        dogscript_entity_1.say_hi(1);
+        dogscript_entity_1.setMaze(basemaze,x_axis_size,z_axis_size,0,0,0,z_axis_size-1);
+
+        temporary_sexy=Instantiate(dogGO,new Vector3(starterpoint.x+((x_axis_size-1)*fullcellsize)+fullcellsize/2,     starterpoint.y+1.5f,    starterpoint.z+(0*fullcellsize)-fullcellsize/2)           ,Quaternion.identity,enemyfolder.transform);
+        
+        
+        dogscript_entity_2=temporary_sexy.GetComponent<Dog>();
+        dogscript_entity_2.say_hi(2);
+        dogscript_entity_2.setMaze(basemaze,x_axis_size,z_axis_size,0,0,x_axis_size-1,0);
+
+
+        GameObject cell_floor;
+        Cell cell_floor_script;
         for (int i = 0; i < x_axis_size; i++){//x
             int offseti = i%2;
             for (int j = 0; j < z_axis_size; j++){//y
@@ -134,7 +145,11 @@ public class Mazegenerater : MonoBehaviour
                 //floor
                 bool light= false;// van e már fény
                 bool chest = true;//kell e ládát lerakni az adott cellába
-                Instantiate(floor,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2,starterpoint.y-0.5f,starterpoint.z+(j*fullcellsize)-fullcellsize/2),Quaternion.identity,floors.transform);
+                
+                cell_floor = Instantiate(floor,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2,starterpoint.y-0.5f,starterpoint.z+(j*fullcellsize)-fullcellsize/2),Quaternion.identity,floors.transform);
+                cell_floor_script = cell_floor.GetComponent<Cell>();
+                cell_floor_script.registrat(dogscript_entity_1,dogscript_entity_2,i,j);
+                
                 if(roomMap[i,j]!=0){//its a room
                     if((offseti==1 || offsetj==1 )&&(offseti!=offsetj)){
                         Instantiate(roof_room,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2,starterpoint.y+5.5f,starterpoint.z+(j*fullcellsize)-fullcellsize/2),Quaternion.identity,roofs.transform);
@@ -586,7 +601,7 @@ public class Mazegenerater : MonoBehaviour
         bool movetonext = false;
         for (int i = 0; i < 15 && !movetonext; i++){
             int next=nextstep();
-            if(algorimusFilo[next]==3){//left
+            if(algorimusFilo[next]==3){//look the documentation its massy
                 if((prex!=x-1)&&(x-1>=0)&&(generateLeft[x-1,y]==0)){//its possible
                         basemaze[x,y,0]=false;//current cells left side
                         basemaze[x-1,y,2]=false;//next cells right side
@@ -596,7 +611,7 @@ public class Mazegenerater : MonoBehaviour
                         //Debug.Log("az "+x+" és "+y+" helyröl kitoroljűk a 0 falat:"+basemaze[x,y,0]);
                     }
                 }
-            if(algorimusFilo[next]==2){//up
+            if(algorimusFilo[next]==2){
                 if((prey!=y-1)&&(y-1>=0)&&(generateLeft[x,y-1]==0)){//its possible,if its possitiv we cant go there//i dont know why i writed this comment
                     basemaze[x,y,1] = false;//current cells left side
                     basemaze[x,y-1,3] = false;//next cells right side
@@ -606,7 +621,7 @@ public class Mazegenerater : MonoBehaviour
                     recursiveGenerate(x,y,x,y-1,currentRecursivePoinLeft-1);
                 }
             }
-            if(algorimusFilo[next]==1){//right
+            if(algorimusFilo[next]==1){
                 if((prex!=x+1)&&(x+1<x_axis_size)&&(generateLeft[x+1,y]==0)){//its possible
                     basemaze[x,y,2]=false;//current cells left side
                     basemaze[x+1,y,0]=false;//next cells right side
@@ -616,7 +631,7 @@ public class Mazegenerater : MonoBehaviour
                     recursiveGenerate(x,y,x+1,y,currentRecursivePoinLeft-1);
                 }
             }
-            if(algorimusFilo[next]==0){//down
+            if(algorimusFilo[next]==0){
                 if((prey!=y+1)&&(y+1<z_axis_size)&&(generateLeft[x,y+1]==0)){//its possible
                     basemaze[x,y,3]=false;//current cells left side
                     basemaze[x,y+1,1]=false;//next cells right side

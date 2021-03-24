@@ -27,4 +27,7 @@ public class ButtonManager : MonoBehaviour
     public void startStory(){
         SceneManager.LoadScene(2);//story index
     }
+    public void quit_from_the_application(){
+        Application.Quit();
+    }
 }
