@@ -12,6 +12,8 @@ public class Mazegenerater : MonoBehaviour
     private GameObject torch;
     private GameObject table_candle;
     private GameObject enemyfolder;
+    private GameObject end_room_area;
+    private GameObject end_room_folder;
 
 
     private GameObject dogGO;
@@ -32,6 +34,8 @@ public class Mazegenerater : MonoBehaviour
     private GameObject walls;
     private GameObject door_frame;
     private GameObject door_inner;
+    private GameObject end_room;
+    private GameObject box;
     private bool[,,] basemaze;
     private bool[,,] doorMap;
     private int[,] roomMap;
@@ -53,14 +57,17 @@ public class Mazegenerater : MonoBehaviour
 
     private int endi=0;
     private int endj=0;
+
+    private int box_rate=5;
     // Start is called before the first frame update
     void Start(){
 
 
-        dogGO = GameObject.Find("Dog");
         floors = GameObject.Find("floors");
         roofs = GameObject.Find("roofs");
         walls = GameObject.Find("walls");
+        end_room_folder = GameObject.Find("end_room_folder");
+        dogGO = (GameObject)Resources.Load("prefab/dog", typeof(GameObject));
         enemyfolder = GameObject.Find("enemyfolder");
         chair = (GameObject)Resources.Load("prefab/chair", typeof(GameObject));
         book = (GameObject)Resources.Load("prefab/book", typeof(GameObject));
@@ -76,12 +83,13 @@ public class Mazegenerater : MonoBehaviour
         table_candle = (GameObject)Resources.Load("prefab/table_candle", typeof(GameObject));
         door_frame = (GameObject)Resources.Load("prefab/door_frame", typeof(GameObject));
         door_inner = (GameObject)Resources.Load("prefab/door", typeof(GameObject));
-        
+        end_room = (GameObject)Resources.Load("prefab/end_room", typeof(GameObject));
+        box = (GameObject)Resources.Load("prefab/box", typeof(GameObject));
         //dogscript = dogGO.GetComponent<Dog>();
 
 
-        x_axis_size = rnd.Next(10,40);
-        z_axis_size = rnd.Next(10,40);
+        x_axis_size = 4;//rnd.Next(10,40);
+        z_axis_size = 4;//rnd.Next(10,40);
 
         basemaze = new bool[x_axis_size,z_axis_size,4];
         doorMap = new bool[x_axis_size,z_axis_size,4];
@@ -109,16 +117,23 @@ public class Mazegenerater : MonoBehaviour
         generateRoom();
         int roomcounter=0;
         generate();
-
-        Instantiate(dogGO,new Vector3(starterpoint.x+(0*fullcellsize)+fullcellsize/2,               starterpoint.y+1.5f,    starterpoint.z+((z_axis_size-1)*fullcellsize)-fullcellsize/2) ,Quaternion.identity,enemyfolder.transform);
-        Instantiate(dogGO,new Vector3(starterpoint.x+((x_axis_size-1)*fullcellsize)+fullcellsize/2,     starterpoint.y+1.5f,    starterpoint.z+(0*fullcellsize)-fullcellsize/2)           ,Quaternion.identity,enemyfolder.transform);
+        GameObject temporary_sexy;
+        temporary_sexy=Instantiate(dogGO,new Vector3(starterpoint.x+(0*fullcellsize)+fullcellsize/2,               starterpoint.y+1.5f,    starterpoint.z+((z_axis_size-1)*fullcellsize)-fullcellsize/2) ,Quaternion.identity,enemyfolder.transform);
+        dogscript=temporary_sexy.GetComponent<Dog>();
+        dogscript.say_hi(1);
+        dogscript.setMaze(basemaze,x_axis_size,z_axis_size);
+        temporary_sexy=Instantiate(dogGO,new Vector3(starterpoint.x+((x_axis_size-1)*fullcellsize)+fullcellsize/2,     starterpoint.y+1.5f,    starterpoint.z+(0*fullcellsize)-fullcellsize/2)           ,Quaternion.identity,enemyfolder.transform);
+        dogscript=temporary_sexy.GetComponent<Dog>();
+        dogscript.say_hi(2);
+        dogscript.setMaze(basemaze,x_axis_size,z_axis_size);
 
         for (int i = 0; i < x_axis_size; i++){//x
             int offseti = i%2;
             for (int j = 0; j < z_axis_size; j++){//y
                 int offsetj = j%2;
                 //floor
-                bool light= false;
+                bool light= false;// van e már fény
+                bool chest = true;//kell e ládát lerakni az adott cellába
                 Instantiate(floor,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2,starterpoint.y-0.5f,starterpoint.z+(j*fullcellsize)-fullcellsize/2),Quaternion.identity,floors.transform);
                 if(roomMap[i,j]!=0){//its a room
                     if((offseti==1 || offsetj==1 )&&(offseti!=offsetj)){
@@ -222,6 +237,12 @@ public class Mazegenerater : MonoBehaviour
                     Instantiate(roof,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2,starterpoint.y+5.5f,starterpoint.z+(j*fullcellsize)-fullcellsize/2),Quaternion.identity,roofs.transform);
                     ///walls 
                     if(basemaze[i,j,0]){// left - down
+                        if(rnd.Next(box_rate)==0 &&chest){
+                            //Debug.Log("chest");
+                            Instantiate(box,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2-2.25f       ,starterpoint.y+0.2f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2)            ,Quaternion.Euler(0f,270f,0f),walls.transform); 
+                            chest=false;
+                        }
+
                         if(!light){
                             Instantiate(wall_whit_torch,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2-3.25f       ,starterpoint.y+2.5f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2)            ,Quaternion.Euler(-90f,270f,0f),walls.transform); 
                             light=true;
@@ -230,6 +251,11 @@ public class Mazegenerater : MonoBehaviour
                         }
                     }
                     if(basemaze[i,j,1]){// top - right
+                        if(rnd.Next(box_rate)==0 &&chest){
+                            //Debug.Log("chest");
+                            Instantiate(box,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2             ,starterpoint.y+0.2f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2-2.25f)      ,Quaternion.Euler(0f,180f,0f),walls.transform);
+                            chest=false;
+                        }
                         if(!light){
                            Instantiate(wall_whit_torch,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2             ,starterpoint.y+2.5f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2-3.25f)      ,Quaternion.Euler(-90f,180f,0f),walls.transform);
                             light=true;
@@ -238,6 +264,11 @@ public class Mazegenerater : MonoBehaviour
                         }
                     }
                     if(basemaze[i,j,2]&& !(endi==i&&endj==j)){// right -top
+                        if(rnd.Next(box_rate)==0 &&chest){
+                            //Debug.Log("chest");
+                            Instantiate(box,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2+2.25f       ,starterpoint.y+0.2f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2)            ,Quaternion.Euler(0f,90f,0f),walls.transform);
+                            chest=false;
+                        }
                         if(!light){
                             Instantiate(wall_whit_torch,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2+3.25f       ,starterpoint.y+2.5f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2)            ,Quaternion.Euler(-90f,90f,0f),walls.transform);
                             light=true;
@@ -246,6 +277,11 @@ public class Mazegenerater : MonoBehaviour
                         }
                     }
                     if(basemaze[i,j,3]&& !(endi==i&&endj==j)){// down - left
+                        if(rnd.Next(box_rate)==0 &&chest){
+                            //Debug.Log("chest");
+                            Instantiate(box,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2             ,starterpoint.y+0.2f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2+2.25f)      ,Quaternion.Euler(0f,0f,0f),walls.transform);
+                            chest=false;
+                        }
                         if(!light){
                             Instantiate(wall_whit_torch,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2             ,starterpoint.y+2.5f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2+3.25f)      ,Quaternion.Euler(-90f,0f,0f),walls.transform);
                             light=true;
@@ -257,6 +293,11 @@ public class Mazegenerater : MonoBehaviour
 
             }
         }
+        
+        
+        end_room_area = Instantiate(end_room,new Vector3(starterpoint.x+((x_axis_size-1)*fullcellsize)+fullcellsize/2+0.2f,  starterpoint.y-0.49f   ,starterpoint.z+((z_axis_size-1)*fullcellsize)-fullcellsize/2 +0.2f),Quaternion.identity,end_room_folder.transform);
+
+        
         for (int index = 0; index < (roomsmid.Length/2); index++){
             int temporary = rnd.Next(2);
             if(temporary==0){
@@ -381,7 +422,7 @@ public class Mazegenerater : MonoBehaviour
 
 
         //karakter a jobb alsó sarokban kezd
-        //playersTransforms.position = playerStarterpont;
+        playersTransforms.position = playerStarterpont;
 
 
         bool done=false;
@@ -942,5 +983,26 @@ public class Mazegenerater : MonoBehaviour
         }
         positionInTheFiloArray=0;
         return positionInTheFiloArray;
+    }
+
+    public void reset(){
+        int childs = floors.transform.childCount;
+        for (int i = childs - 1; i > 0; i--){
+            GameObject.Destroy(floors.transform.GetChild(i).gameObject);
+        }
+        childs = roofs.transform.childCount;
+        for (int i = childs - 1; i > 0; i--){
+            GameObject.Destroy(roofs.transform.GetChild(i).gameObject);
+        }
+        childs = walls.transform.childCount;
+        for (int i = childs - 1; i > 0; i--){
+            GameObject.Destroy(walls.transform.GetChild(i).gameObject);
+        }
+        childs = end_room_folder.transform.childCount;
+        for (int i = childs - 1; i > 0; i--){
+            GameObject.Destroy(end_room_folder.transform.GetChild(i).gameObject);
+        }
+        Start();
+        Debug.Log(x_axis_size + " " + z_axis_size);
     }
 }
