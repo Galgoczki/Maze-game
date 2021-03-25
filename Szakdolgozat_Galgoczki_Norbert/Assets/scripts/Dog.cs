@@ -43,12 +43,13 @@ public class Dog : MonoBehaviour
     {
         player = GameObject.Find("player");
 
-        wait= 100f;
+        wait= 10f;
     }
 
     // Update is called once per frame
     void Update(){  
-        if(maze!=null){ 
+        if(maze!=null&& wait<=0){ 
+            wait = 0;
             if(timeToTarget<1)//move to target
             //wait -= Time.deltaTime;
             timeToTarget += Time.deltaTime/7;
@@ -93,8 +94,10 @@ public class Dog : MonoBehaviour
                         break;
                 }
                 faceing=(faceing+2)%4;
-                wait=10;
+                
             }
+        }else{
+            wait-=Time.deltaTime;
         }
     }
 
@@ -119,7 +122,7 @@ public class Dog : MonoBehaviour
         }
         aiMap[dogi,dogj]=(int)Mathf.Floor(Mathf.Sqrt(Mathf.Pow(playeri-dogi,2)+Mathf.Pow(playerj-dogi,2)));
         preMap[dogi,dogj]=(int)Mathf.Floor(Mathf.Sqrt(Mathf.Pow(playeri-dogi,2)+Mathf.Pow(playerj-dogi,2)));
-        Debug.Log("booo már tudok tájékozodni");
+        //Debug.Log("booo már tudok tájékozodni");
     }
 
     private void player_moved(){
@@ -190,19 +193,23 @@ public class Dog : MonoBehaviour
     public void setPlayerPosition(int i,int j){
         playeri=i;
         playerj=j;
-        Debug.Log("kutya tudja hol vagy:"+playeri+playerj);
-        player_moved();
+        //Debug.Log("kutya tudja hol vagy:"+playeri+playerj);
+        //player_moved();
     }
 
 
     public void stop_wait_a_minute(){
-        Debug.Log("Fill my cup, put some liquor in it \nTake a sip, sign a check\n...");
+        //Debug.Log("Fill my cup, put some liquor in it \nTake a sip, sign a check\n...");//music reference
         //ideiglenes ez az egész fügvény
         //Destroy(this.gameObject);
-        this.gameObject.SetActive(false);
+        //this.gameObject.SetActive(false);
+        wait=15f;
     }
 
     public void say_hi(int a){
         Debug.Log("hi im a sphere...i mean dog. my mane is" + a);
+    }
+    public bool isDangerous(){
+        return (wait<=0);
     }
 }

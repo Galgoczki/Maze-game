@@ -191,28 +191,34 @@ public class Player : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other){
         //cellába belépés ->cella script-> kutyának elküld pozicio
-        Cell cell =other.gameObject.GetComponent<Cell>();
+        Cell cell = other.gameObject.GetComponent<Cell>();
+        Dog dogscript_triggerCollider = other.gameObject.GetComponent<Dog>();
         if(cell != null){
             cell.playerEnter();
         }
-
+        if(dogscript_triggerCollider != null){
+            if(dogscript_triggerCollider.isDangerous()){
+                backToMenu();
+            }
+        }
 
     }
+
+
     private void OnTriggerStay(Collider other){//a végső szoba terűletén van csak triggeres collider
         if(other.gameObject.name==end.name+"(Clone)"){
             //Debug.Log("benne van");
             end_text.text="A Lanbirintusból való kilépéshez nyomd meg az 'e' betűt";
             if (Input.GetKey(KeyCode.E)){
-                Cursor.lockState = CursorLockMode.None;//the cursor is dont go out off the screen
-                Cursor.visible = true;
-                //SceneManager.LoadScene(1);
-                mazegenerator.reset();
-                SceneManager.LoadScene(0);
+                backToMenu();
+
             }
         }else{
             //Debug.Log(other.name+" - "+end.name);
         }
     }
+
+
      private void OnTriggerExit(Collider other){//a végső szoba terűletén van csak triggeres collider
         if(other.gameObject.name==end.name+"(Clone)"){
             end_text.text="";
@@ -231,5 +237,10 @@ public class Player : MonoBehaviour
         Gizmos.DrawSphere(this.transform.position, 2);
     }
     */
- 
+    private void backToMenu(){
+        Cursor.lockState = CursorLockMode.None;//the cursor is dont go out off the screen
+        Cursor.visible = true;
+        mazegenerator.reset();
+        SceneManager.LoadScene(0);
+    }
 }
