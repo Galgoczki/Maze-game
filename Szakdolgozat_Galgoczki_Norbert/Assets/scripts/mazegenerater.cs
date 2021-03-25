@@ -126,14 +126,14 @@ public class Mazegenerater : MonoBehaviour
         
         dogscript_entity_1=temporary_sexy.GetComponent<Dog>();
         dogscript_entity_1.say_hi(1);
-        dogscript_entity_1.setMaze(basemaze,x_axis_size,z_axis_size,0,0,0,z_axis_size-1);
+        dogscript_entity_1.setMaze(basemaze,x_axis_size,z_axis_size,0,0,0,z_axis_size-1,new Vector3(starterpoint.x+fullcellsize/2,starterpoint.y+1.5f,starterpoint.z-fullcellsize/2));
 
         temporary_sexy=Instantiate(dogGO,new Vector3(starterpoint.x+((x_axis_size-1)*fullcellsize)+fullcellsize/2,     starterpoint.y+1.5f,    starterpoint.z+(0*fullcellsize)-fullcellsize/2)           ,Quaternion.identity,enemyfolder.transform);
         
         
         dogscript_entity_2=temporary_sexy.GetComponent<Dog>();
         dogscript_entity_2.say_hi(2);
-        dogscript_entity_2.setMaze(basemaze,x_axis_size,z_axis_size,0,0,x_axis_size-1,0);
+        dogscript_entity_2.setMaze(basemaze,x_axis_size,z_axis_size,0,0,x_axis_size-1,0,new Vector3(starterpoint.x+fullcellsize/2,starterpoint.y+1.5f,starterpoint.z-fullcellsize/2));
 
 
         GameObject cell_floor;
@@ -987,8 +987,8 @@ public class Mazegenerater : MonoBehaviour
             }   
             itemitem+="\n";
         }
-        Debug.Log(itemitem);
-        Debug.Log(roomsmidindex);
+       // Debug.Log(itemitem);
+        //Debug.Log(roomsmidindex);
     }
 
     int nextstep(){
