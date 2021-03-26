@@ -20,10 +20,10 @@ public class mazegenerater : MonoBehaviour
     //private Dog dogscript;
     private Dog dogscript_entity_1;
     private Dog dogscript_entity_2;
-    [SerializeField]private Transform playersTransforms;
+    private Transform playersTransforms;
     public string key;//where we start the generat;how deep is the FILO go;where is the player start ;wher the filo is step;
-    [SerializeField]private Vector3 playerStarterpont;
-    [SerializeField]private bool keyalreadygiven = false;
+    private Vector3 playerStarterpont;
+    private bool keyalreadygiven = false;
     private System.Random rnd = new System.Random();
     private GameObject floor;
     private GameObject roof;
@@ -47,9 +47,9 @@ public class mazegenerater : MonoBehaviour
     //   |_0_|
     // default pos of wall --
     //x_axis_size;z_axis_size
-    [SerializeField]private int x_axis_size;
-    [SerializeField]private int z_axis_size;
-    [SerializeField]private float size = 6;//size of the maze's cells
+    private int x_axis_size;
+    private int z_axis_size;
+    private float size = 6;//size of the maze's cells
     public short[,] generateLeft;
     private float fullcellsize = 7;//cell+wallssize
     private Vector3 starterpoint = new Vector3(20,0,20);//the mazes starter corner
@@ -64,7 +64,7 @@ public class mazegenerater : MonoBehaviour
     // Start is called before the first frame update
     void Start(){
 
-
+        playersTransforms=this.transform;
         floors = GameObject.Find("floors");
         roofs = GameObject.Find("roofs");
         walls = GameObject.Find("walls");
