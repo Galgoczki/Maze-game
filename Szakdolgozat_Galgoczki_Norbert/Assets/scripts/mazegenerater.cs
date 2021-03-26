@@ -90,8 +90,8 @@ public class mazegenerater : MonoBehaviour
         //dogscript = dogGO.GetComponent<Dog>();
 
 
-        x_axis_size = 4;//rnd.Next(10,40);
-        z_axis_size = 4;//rnd.Next(10,40);
+        x_axis_size = rnd.Next(10,20);
+        z_axis_size = rnd.Next(10,20);
 
         basemaze = new bool[x_axis_size,z_axis_size,4];
         doorMap = new bool[x_axis_size,z_axis_size,4];
