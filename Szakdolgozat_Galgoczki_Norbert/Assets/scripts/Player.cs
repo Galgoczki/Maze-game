@@ -19,7 +19,7 @@ public class Player : MonoBehaviour
     private GameObject roofs;
     private GameObject walls;
     private GameObject end_room_folder;
-    private Mazegenerater mazegenerator;
+    private mazegenerater mazegenerator;
 
     private Ray ray;
     private Transform temporary;
@@ -67,7 +67,7 @@ public class Player : MonoBehaviour
         floors = GameObject.Find("floors");
         roofs = GameObject.Find("roofs");
         walls = GameObject.Find("walls");
-        mazegenerator = GameObject.Find("Maze").GetComponent<Mazegenerater>();
+        mazegenerator = GameObject.Find("Maze").GetComponent<mazegenerater>();
         
     }
 

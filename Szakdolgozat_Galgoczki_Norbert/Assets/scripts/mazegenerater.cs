@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Mazegenerater : MonoBehaviour
+public class mazegenerater : MonoBehaviour
 {
     private GameObject chair;
     private GameObject book;
