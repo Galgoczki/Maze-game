@@ -23,8 +23,17 @@ public class Dog : MonoBehaviour
     private List<Vector2> mypath;
     private float fullcellsize = 7;
     private int faceing=0;//testing the muvement
-    private float timeToTarget=2;
+    private int turning=0;
+    private Transform turningVector;
+    private Transform targetTurningVector;
+    private float timeToTarget=2f;
+    private float turningTime=1f;
+    private float turningspeed=0.5f;
+    private bool animeting = true;
+    private Animator animator;
+    
     /*
+                            dogposition.eulerAngles.y
     / end->|---|
     /      |   | x tendely i
     /      |---|<start
@@ -42,61 +51,79 @@ public class Dog : MonoBehaviour
     void Start()
     {
         player = GameObject.Find("player");
-
+        Transform temperary = this.gameObject.transform.GetChild(0);
+        animator = temperary.gameObject.GetComponent<Animator>();
         wait= 10f;
     }
 
     // Update is called once per frame
-    void Update(){  
+    void Update(){ 
+        Debug.DrawLine(transform.position,transform.position+transform.forward,Color.red,0.3f);
         if(maze!=null&& wait<=0){ 
+            if(!animeting){
+                animeting=true;
+                animator.enabled = true;
+            }
             wait = 0;
-            if(timeToTarget<1)//move to target
-            //wait -= Time.deltaTime;
-            timeToTarget += Time.deltaTime/7;
-            transform.position = Vector3.Lerp(dogposition, target, timeToTarget);
+            if(turningTime<1){
 
-            if(timeToTarget>=1){//update the target
-                int optimalface=4;
-                int optimalface_index=10;
-                for (int index = 0; index < 4; index++){
-                    if(!maze[dogi,dogj,((faceing+1+index)%4)]){//mindig jobbra szabály/right-hand rule
-                            optimalface=((faceing+1+index)%4);
+                turningTime += Time.deltaTime/turningspeed;
+                transform.rotation = Quaternion.Lerp(turningVector.rotation, Quaternion.Euler (turningVector.rotation.x, turningVector.rotation.y-turning, turningVector.rotation.z) , turningTime);
+
+            }else{
+                turningVector=transform;
+                if(timeToTarget<1){
+                    timeToTarget += Time.deltaTime/7;
+                    transform.position = Vector3.Lerp(dogposition, target, timeToTarget);
+                }
+                if(timeToTarget>=1){//update the target
+                    int optimalface=4;
+                    int optimalface_index=10;
+                    for (int index = 0; index < 4; index++){
+                        if(!maze[dogi,dogj,((faceing+1+index)%4)]){//mindig jobbra szabály/right-hand rule
+                                optimalface=((faceing+1+index)%4);
+                                turning=((faceing+2+index)%4)*90;
+                                break;
+                        }
+                    }
+                    faceing=optimalface;
+                    switch (faceing){   
+                        case 0:
+                            dogposition = mazeZeroZero +new Vector3(dogi*fullcellsize,0,dogj*fullcellsize);
+                            dogi-=1;
+                            target = mazeZeroZero +new Vector3(dogi*fullcellsize,0,dogj*fullcellsize);
+                            timeToTarget=0;
+                            break;
+                        case 1:
+                            dogposition = mazeZeroZero +new Vector3(dogi*fullcellsize,0,dogj*fullcellsize);
+                            dogj-=1;
+                            target = mazeZeroZero +new Vector3(dogi*fullcellsize,0,dogj*fullcellsize);
+                            timeToTarget=0;
+                            break;
+                        case 2:
+                            dogposition = mazeZeroZero +new Vector3(dogi*fullcellsize,0,dogj*fullcellsize);
+                            dogi+=1;
+                            target = mazeZeroZero +new Vector3(dogi*fullcellsize,0,dogj*fullcellsize);
+                            timeToTarget=0;
+                            break;
+                        case 3:
+                            dogposition = mazeZeroZero +new Vector3(dogi*fullcellsize,0,dogj*fullcellsize);
+                            dogj+=1;
+                            target = mazeZeroZero +new Vector3(dogi*fullcellsize,0,dogj*fullcellsize);
+                            timeToTarget=0;
+                            break;
+                        default:
                             break;
                     }
+                    faceing=(faceing+2)%4;
+                    turningTime=0;
                 }
-                faceing=optimalface;
-                switch (faceing){   
-                    case 0:
-                        dogposition = mazeZeroZero +new Vector3(dogi*fullcellsize,0,dogj*fullcellsize);
-                        dogi-=1;
-                        target = mazeZeroZero +new Vector3(dogi*fullcellsize,0,dogj*fullcellsize);
-                        timeToTarget=0;
-                        break;
-                    case 1:
-                        dogposition = mazeZeroZero +new Vector3(dogi*fullcellsize,0,dogj*fullcellsize);
-                        dogj-=1;
-                        target = mazeZeroZero +new Vector3(dogi*fullcellsize,0,dogj*fullcellsize);
-                        timeToTarget=0;
-                        break;
-                    case 2:
-                        dogposition = mazeZeroZero +new Vector3(dogi*fullcellsize,0,dogj*fullcellsize);
-                        dogi+=1;
-                        target = mazeZeroZero +new Vector3(dogi*fullcellsize,0,dogj*fullcellsize);
-                        timeToTarget=0;
-                        break;
-                    case 3:
-                        dogposition = mazeZeroZero +new Vector3(dogi*fullcellsize,0,dogj*fullcellsize);
-                        dogj+=1;
-                        target = mazeZeroZero +new Vector3(dogi*fullcellsize,0,dogj*fullcellsize);
-                        timeToTarget=0;
-                        break;
-                    default:
-                        break;
-                }
-                faceing=(faceing+2)%4;
-                
             }
         }else{
+            if(animeting){
+                animeting=false;
+                animator.enabled = false;
+            }
             wait-=Time.deltaTime;
         }
     }
@@ -207,7 +234,7 @@ public class Dog : MonoBehaviour
     }
 
     public void say_hi(int a){
-        Debug.Log("hi im a sphere...i mean dog. my mane is" + a);
+        //Debug.Log("hi im a sphere...i mean dog. my mane is" + a);
     }
     public bool isDangerous(){
         return (wait<=0);

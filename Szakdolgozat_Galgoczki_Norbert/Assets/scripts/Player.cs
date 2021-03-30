@@ -42,16 +42,25 @@ public class Player : MonoBehaviour
     private float moveX;
     private float moveZ;
     private float speed = 10f;
-    private float gravitysize = -10f;//default -10f
-    private float jumpHight = 4f;
+    private float gravitysize = -13f;//default -10f
+    private float jumpHight = 4.5f;
     private Vector3 move;
     private Vector3 movegravity;
     private GameObject end;
+
+    
+    private Animator animator;
+
+
     // Start is called before the first frame update
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;//the cursor is dont go out off the screen
         Cursor.visible = false;
+
+        Transform temperary = this.gameObject.transform.GetChild(3);
+        animator = temperary.gameObject.GetComponent<Animator>();
+
         text = GameObject.Find("UIszoveg").GetComponent<Text>();//
         end_text = GameObject.Find("UIendszoveg").GetComponent<Text>();//
         text_csont = GameObject.Find("UIcsontszamlalo").GetComponent<Text>();//
@@ -77,9 +86,11 @@ public class Player : MonoBehaviour
         //isGrounded= Physics.CheckSphere(,groundDistance,groundMask);
         if (Physics.Raycast(groundCheck.position,Vector3.down, 0.2f)){
             isGrounded=true;
+            animator.ResetTrigger("jump_trigger");
         }else{
             isGrounded=false;
         }
+
         if(isGrounded && movegravity.y < 0){//fall
             movegravity.y=-1f;
         }
@@ -98,16 +109,20 @@ public class Player : MonoBehaviour
 
         playerBody.Rotate(Vector3.up * egerX);
         
-        move = transform.right *moveX +transform.forward * moveZ;//its a vector to the distance wher we want to go
+        move = transform.right * moveX*0.5f + transform.forward * moveZ;//its a vector to the distance wher we want to go
+        if(move!=new Vector3(0,0,0)){
+            animator.SetTrigger("run_trigger");
+        }
         
-        controller.Move(move * speed);
-
         if(Input.GetButton("Jump")&& isGrounded){
             movegravity.y= jumpHight;
             // animation
+            animator.ResetTrigger("run_trigger");
+            animator.SetTrigger("jump_trigger");
 
         }
 
+        controller.Move(move * speed);
         movegravity.y += gravitysize * Time.deltaTime;
 
         controller.Move(movegravity*Time.deltaTime);
@@ -123,8 +138,8 @@ public class Player : MonoBehaviour
         if(usedelay<0)usedelay=0f;
 
 
-        if (Physics.Raycast(kamera.position,kamera.forward, out hit, 2)){
-            Debug.DrawLine(this.transform.position, hit.point,Color.red,2);
+        if (Physics.Raycast(kamera.position,kamera.forward, out hit, 3)){
+            //Debug.DrawLine(this.transform.position, hit.point,Color.red,2);
             //Debug.Log(hit.collider.name);
             temporary = hit.collider.transform;
             doorscript = temporary.GetComponent<Door>();

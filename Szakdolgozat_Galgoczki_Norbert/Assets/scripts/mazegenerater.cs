@@ -60,7 +60,9 @@ public class mazegenerater : MonoBehaviour
     private int endi=0;
     private int endj=0;
 
-    private int box_rate=5;
+    private int box_rate=8;
+
+    private int plus_dogs;
     // Start is called before the first frame update
     void Start(){
 
@@ -90,9 +92,12 @@ public class mazegenerater : MonoBehaviour
         //dogscript = dogGO.GetComponent<Dog>();
 
 
-        x_axis_size = rnd.Next(10,20);
-        z_axis_size = rnd.Next(10,20);
-
+        x_axis_size = rnd.Next(15,40);
+        z_axis_size = rnd.Next(15,40);
+        //plus_dogs=(int)Mathf.Floor(Mathf.Sqrt(x_axis_size*x_axis_size+z_axis_size*z_axis_size)/15);
+        
+        //Debug.Log(plus_dogs);
+        
         basemaze = new bool[x_axis_size,z_axis_size,4];
         doorMap = new bool[x_axis_size,z_axis_size,4];
         endi=x_axis_size-1;
@@ -122,18 +127,18 @@ public class mazegenerater : MonoBehaviour
 
         GameObject temporary_sexy;
 
-        temporary_sexy=Instantiate(dogGO,new Vector3(starterpoint.x+(0*fullcellsize)+fullcellsize/2,               starterpoint.y+1.5f,    starterpoint.z+((z_axis_size-1)*fullcellsize)-fullcellsize/2) ,Quaternion.identity,enemyfolder.transform);
+        temporary_sexy=Instantiate(dogGO,new Vector3(starterpoint.x+(0*fullcellsize)+fullcellsize/2,               starterpoint.y+1.5f-0.81f,    starterpoint.z+((z_axis_size-1)*fullcellsize)-fullcellsize/2) ,Quaternion.identity,enemyfolder.transform);
         
         dogscript_entity_1=temporary_sexy.GetComponent<Dog>();
         dogscript_entity_1.say_hi(1);
-        dogscript_entity_1.setMaze(basemaze,x_axis_size,z_axis_size,0,0,0,z_axis_size-1,new Vector3(starterpoint.x+fullcellsize/2,starterpoint.y+1.5f,starterpoint.z-fullcellsize/2));
+        dogscript_entity_1.setMaze(basemaze,x_axis_size,z_axis_size,0,0,0,z_axis_size-1,new Vector3(starterpoint.x+fullcellsize/2,starterpoint.y+1.5f-0.81f,starterpoint.z-fullcellsize/2));
 
-        temporary_sexy=Instantiate(dogGO,new Vector3(starterpoint.x+((x_axis_size-1)*fullcellsize)+fullcellsize/2,     starterpoint.y+1.5f,    starterpoint.z+(0*fullcellsize)-fullcellsize/2)           ,Quaternion.identity,enemyfolder.transform);
+        temporary_sexy=Instantiate(dogGO,new Vector3(starterpoint.x+((x_axis_size-1)*fullcellsize)+fullcellsize/2,     starterpoint.y+1.5f-0.81f,    starterpoint.z+(0*fullcellsize)-fullcellsize/2)           ,Quaternion.identity,enemyfolder.transform);
         
         
         dogscript_entity_2=temporary_sexy.GetComponent<Dog>();
         dogscript_entity_2.say_hi(2);
-        dogscript_entity_2.setMaze(basemaze,x_axis_size,z_axis_size,0,0,x_axis_size-1,0,new Vector3(starterpoint.x+fullcellsize/2,starterpoint.y+1.5f,starterpoint.z-fullcellsize/2));
+        dogscript_entity_2.setMaze(basemaze,x_axis_size,z_axis_size,0,0,x_axis_size-1,0,new Vector3(starterpoint.x+fullcellsize/2,starterpoint.y+1.5f-0.81f,starterpoint.z-fullcellsize/2));
 
 
         GameObject cell_floor;
@@ -320,7 +325,7 @@ public class mazegenerater : MonoBehaviour
                 Instantiate(table_candle,new Vector3(starterpoint.x+(roomsmid[index,0]*fullcellsize)+Random.Range(-0.8f, 0.8f)             ,starterpoint.y+1.08f        ,starterpoint.z+((roomsmid[index,1]-1)*fullcellsize)+Random.Range(-0.32f, 0.32f))      ,Quaternion.Euler(-90f,0f,0f),walls.transform);
                 temporary = rnd.Next(2);
                 if(temporary==0){
-                    Instantiate(chair,new Vector3(starterpoint.x+(roomsmid[index,0]*fullcellsize)+0.4f             ,starterpoint.y+0.35f        ,starterpoint.z+((roomsmid[index,1]-1)*fullcellsize)+1.3f)      ,Quaternion.Euler(-90f,180f,0f),walls.transform);
+                    Instantiate(chair,new Vector3(starterpoint.x+(roomsmid[index,0]*fullcellsize)+0.4f-0.8f             ,starterpoint.y+0.35f        ,starterpoint.z+((roomsmid[index,1]-1)*fullcellsize)+1.3f)      ,Quaternion.Euler(-90f,180f,0f),walls.transform);
                     
                 }else{
                     Instantiate(chair,new Vector3(starterpoint.x+(roomsmid[index,0]*fullcellsize)+0.4f             ,starterpoint.y+0.35f        ,starterpoint.z+((roomsmid[index,1]-1)*fullcellsize)-1.3f)      ,Quaternion.Euler(-90f,0,0f),walls.transform);
@@ -425,7 +430,7 @@ public class mazegenerater : MonoBehaviour
         List<int[]> ListOfThePossiblaStarterPoints = new List<int[]>(); //its will be the list of the point where the algoritm possible start to grow the maze
         ListOfThePossiblaStarterPoints.Add(new int[2]{int.Parse(temporarystringholder2[0]),int.Parse(temporarystringholder2[1])});
         playerStarterpont = new Vector3(starterpoint.x+(ListOfThePossiblaStarterPoints[0][0]*fullcellsize)+fullcellsize/2,starterpoint.y+1.5f,starterpoint.z+(ListOfThePossiblaStarterPoints[0][1]*fullcellsize)-fullcellsize/2);
-        playerStarterpont = new Vector3(starterpoint.x+(0*fullcellsize)+fullcellsize/2,starterpoint.y+1.5f,starterpoint.z+(0*fullcellsize)-fullcellsize/2);
+        playerStarterpont = new Vector3(starterpoint.x+(0*fullcellsize)+fullcellsize/2,starterpoint.y+1.6f,starterpoint.z+(0*fullcellsize)-fullcellsize/2);
         //the first element of this list is the point where we start the maze generat and its the starter point of the player
         
         temporarystringholder2=temporarystringholder[3].Split(',');//4th part of the key and yet the last
@@ -1018,6 +1023,6 @@ public class mazegenerater : MonoBehaviour
             GameObject.Destroy(end_room_folder.transform.GetChild(i).gameObject);
         }
         Start();
-        Debug.Log(x_axis_size + " " + z_axis_size);
+        //Debug.Log(x_axis_size + " " + z_axis_size);
     }
 }
