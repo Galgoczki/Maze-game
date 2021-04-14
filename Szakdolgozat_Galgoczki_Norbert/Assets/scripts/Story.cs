@@ -19,15 +19,15 @@ public class Story : MonoBehaviour
         //elf,mage,name: Cat lady -> Cat
         tortenet = new  string[]{"A szöveg felgyorsitásához nyomd meg a <color=green>bal</color> egérgombot és <color=red>jobb</color> egérgombot megnyomásával meg vissza tudsz ugrani a fö oldalra",
                                 "",
-                                "A görgövel tudsz haladni elörébb és hátrább, ha <color=green>felfele</color> görgetsz akkor az előző szövegre megy, ha <color=red>elfele</color> görgetsz akkor a következöre szövegrészletre megy megy",//wait merre van a felfele
+                                "A görgővel tudsz haladni elörébb és hátrább, ha <color=green>felfele</color> görgetsz akkor az előző szövegre megy, ha <color=red>lefele</color> görgetsz akkor a következöre szövegrészletre megy megy",//wait merre van a felfele
                                 "",
                                 "",
                                 "",
-                                "Történetünk egy varázs világban játszodik melynek neve <b>Golgernia</b>, ahol a mágia elég hétköznapi",//btw a nevemből képeztem a Galgóczkiból a G_lg_ és a Norbertből az oer plusz nia
-                                "legalább is az átlag mágia mind mindenhol itt is megtalálható az elit réteg ",
-                                "ahova vagy beleszület vagy nagy nehezen tehetséggel és szerencsével ",
-                                "beküzdöd magad és kivivod a többi <b>\"nemes\"</b> becsületét és tiszteletét",
-                                "de ebben a világban nem a nemesek a leg nagyobb hatalommal birók. ",
+                                "Történetünk egy varázs világban játszódik, melynek neve <b>Golgernia</b>, ahol a mágia elég hétköznapi",//btw a nevemből képeztem a Galgóczkiból a G_lg_ és a Norbertből az oer plusz nia
+                                "legalábbis az átlag mágia mint mindenhol, itt is megtalálható az elit réteg ",
+                                "ahova vagy beleszület, vagy nagy nehezen tehetséggel és szerencsével ",
+                                "beküzdöd magad, és kivívod a többi <b>\"nemes\"</b> becsületét és tiszteletét",
+                                "de ebben a világban nem a nemesek a legnagyobb hatalommal birók. ",
                                 "Néha a kifejezetten bátor és tehetséges kalandorok sokkal erösebbek ",
                                 "lesznek mint az az átlag élölény képes felfogni, belölük lesznek a <b>\"Hősök\"</b>,",
                                 "<b>\"Diktátorok\"</b>,<b>\"Démon úrak\"</b> vagy akár <b>\"Istenek\"</b>",

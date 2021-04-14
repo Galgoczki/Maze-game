@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-static class Global_options_handler{
-    static float sound;
-    static float sensitivity;
+public static class Global_options_handler{
+    public static float sound=1;
+    public static float sensitivity=1f;
 
 }

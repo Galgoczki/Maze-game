@@ -96,8 +96,8 @@ public class Player : MonoBehaviour
         }
 
         //input kezelés
-        egerX = Input.GetAxis("Mouse X") * egerErzekenyseg;//unity give -1,1 * mouse sens * time to run the game same on a old pc and a new one
-        egerY = Input.GetAxis("Mouse Y") * egerErzekenyseg;//* Time.deltaTime
+        egerX = Input.GetAxis("Mouse X") * egerErzekenyseg*Global_options_handler.sensitivity;//unity give -1,1 * mouse sens * time to run the game same on a old pc and a new one
+        egerY = Input.GetAxis("Mouse Y") * egerErzekenyseg*Global_options_handler.sensitivity;//* Time.deltaTime
         moveX = Input.GetAxis("Horizontal") * Time.deltaTime;
         moveZ = Input.GetAxis("Vertical") * Time.deltaTime;
         
@@ -194,15 +194,12 @@ public class Player : MonoBehaviour
         text_csont.text = "csontok:" + bone_number;
         text_cd.text =(usedelay<=0.001f)?"":"a következö cselekedetig ennyit kell várnod "+((usedelay-usedelay%0.5)+0.5)+"sec";
 
-        /*
-        if (Input.GetKey("escape")){
-            Cursor.lockState = CursorLockMode.None;//the cursor is dont go out off the screen
-            Cursor.visible = true;
-            //SceneManager.LoadScene(1);
-            mazegenerator.reset();
-            SceneManager.LoadScene(0);
+
+        if (Input.GetKey("escape")){//kilépés escap
+            backToMenu();
         }
-        */
+
+
     }
     private void OnTriggerEnter(Collider other){
         //cellába belépés ->cella script-> kutyának elküld pozicio
@@ -245,13 +242,6 @@ public class Player : MonoBehaviour
             cell.playerExit();
         }
     }
-    
-    /*
-    void OnDrawGizmos(){
-        Gizmos.color = Color.red;
-        Gizmos.DrawSphere(this.transform.position, 2);
-    }
-    */
     private void backToMenu(){
         Cursor.lockState = CursorLockMode.None;//the cursor is dont go out off the screen
         Cursor.visible = true;
