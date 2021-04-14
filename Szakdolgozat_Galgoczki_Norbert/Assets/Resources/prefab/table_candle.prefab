@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 5291963767240508873}
   - component: {fileID: 3781518672711187863}
   - component: {fileID: 5412879187206439577}
-  - component: {fileID: 3981015396481117099}
   m_Layer: 0
   m_Name: Particle System
   m_TagString: Untagged
@@ -4852,18 +4851,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &3981015396481117099
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6319234245954282816}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 29a3ac8427c9aa94f899f0d11e3ca180, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &6945004800642471168
 GameObject:
   m_ObjectHideFlags: 0
@@ -4968,6 +4955,7 @@ GameObject:
   - component: {fileID: 6464849141522125192}
   - component: {fileID: 9102677835150697794}
   - component: {fileID: 7424783159630899550}
+  - component: {fileID: 5397066356324867150}
   m_Layer: 0
   m_Name: table_candle
   m_TagString: Untagged
@@ -5051,3 +5039,15 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.083423994, y: 0.083424024, z: 0.045147333}
   m_Center: {x: -0.00000051409, y: -0.00000001676381, z: -0.0074855285}
+--- !u!114 &5397066356324867150
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7301400643427959959}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29a3ac8427c9aa94f899f0d11e3ca180, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

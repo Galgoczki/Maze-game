@@ -42,7 +42,7 @@ Light:
   serializedVersion: 10
   m_Type: 2
   m_Shape: 0
-  m_Color: {r: 1, g: 0.7466017, b: 0, a: 0.7607843}
+  m_Color: {r: 1, g: 0.2711608, b: 0, a: 0.78039217}
   m_Intensity: 1
   m_Range: 15
   m_SpotAngle: 30
@@ -82,7 +82,7 @@ Light:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingLayerMask: 1
-  m_Lightmapping: 4
+  m_Lightmapping: 1
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 2
@@ -105,6 +105,18 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.005, y: 0.0065175197, z: 0.0059482795}
   m_Center: {x: 0.00018451456, y: 0.0157306, z: -0.012190689}
+--- !u!114 &7431008293109453860
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8998567413083839654}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29a3ac8427c9aa94f899f0d11e3ca180, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8422393380886775070
 GameObject:
   m_ObjectHideFlags: 0
@@ -117,7 +129,6 @@ GameObject:
   - component: {fileID: 3535828105233225892}
   - component: {fileID: 7486537138000385251}
   - component: {fileID: 2854070184662390178}
-  - component: {fileID: 6743013352197586192}
   m_Layer: 0
   m_Name: Particle System
   m_TagString: Untagged
@@ -4957,18 +4968,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &6743013352197586192
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8422393380886775070}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 29a3ac8427c9aa94f899f0d11e3ca180, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &8079524471608287735
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -94,6 +94,8 @@ public class mazegenerater : MonoBehaviour
 
         x_axis_size = rnd.Next(15,40);
         z_axis_size = rnd.Next(15,40);
+        //x_axis_size = 4;//rnd.Next(15,40);
+        //z_axis_size = 4;//rnd.Next(15,40);
         //plus_dogs=(int)Mathf.Floor(Mathf.Sqrt(x_axis_size*x_axis_size+z_axis_size*z_axis_size)/15);
         
         //Debug.Log(plus_dogs);
@@ -259,7 +261,7 @@ public class mazegenerater : MonoBehaviour
                     if(basemaze[i,j,0]){// left - down
                         if(rnd.Next(box_rate)==0 &&chest){
                             //Debug.Log("chest");
-                            Instantiate(box,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2-2.25f       ,starterpoint.y+0.2f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2)            ,Quaternion.Euler(0f,270f,0f),walls.transform); 
+                            Instantiate(box,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2-2.25f       ,starterpoint.y+0.4f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2)            ,Quaternion.Euler(0f,270f,0f),walls.transform); 
                             chest=false;
                         }
 
@@ -273,7 +275,7 @@ public class mazegenerater : MonoBehaviour
                     if(basemaze[i,j,1]){// top - right
                         if(rnd.Next(box_rate)==0 &&chest){
                             //Debug.Log("chest");
-                            Instantiate(box,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2             ,starterpoint.y+0.2f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2-2.25f)      ,Quaternion.Euler(0f,180f,0f),walls.transform);
+                            Instantiate(box,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2             ,starterpoint.y+0.4f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2-2.25f)      ,Quaternion.Euler(0f,180f,0f),walls.transform);
                             chest=false;
                         }
                         if(!light){
@@ -286,7 +288,7 @@ public class mazegenerater : MonoBehaviour
                     if(basemaze[i,j,2]&& !(endi==i&&endj==j)){// right -top
                         if(rnd.Next(box_rate)==0 &&chest){
                             //Debug.Log("chest");
-                            Instantiate(box,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2+2.25f       ,starterpoint.y+0.2f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2)            ,Quaternion.Euler(0f,90f,0f),walls.transform);
+                            Instantiate(box,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2+2.25f       ,starterpoint.y+0.4f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2)            ,Quaternion.Euler(0f,90f,0f),walls.transform);
                             chest=false;
                         }
                         if(!light){
@@ -299,7 +301,7 @@ public class mazegenerater : MonoBehaviour
                     if(basemaze[i,j,3]&& !(endi==i&&endj==j)){// down - left
                         if(rnd.Next(box_rate)==0 &&chest){
                             //Debug.Log("chest");
-                            Instantiate(box,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2             ,starterpoint.y+0.2f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2+2.25f)      ,Quaternion.Euler(0f,0f,0f),walls.transform);
+                            Instantiate(box,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2             ,starterpoint.y+0.4f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2+2.25f)      ,Quaternion.Euler(0f,0f,0f),walls.transform);
                             chest=false;
                         }
                         if(!light){
