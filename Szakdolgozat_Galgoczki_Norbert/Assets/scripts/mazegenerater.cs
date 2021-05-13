@@ -96,8 +96,8 @@ public class mazegenerater : MonoBehaviour
 
         x_axis_size = rnd.Next(15,40);
         z_axis_size = rnd.Next(15,40);
-        x_axis_size = 3;//rnd.Next(15,40);
-        z_axis_size = 3;//rnd.Next(15,40);
+        //x_axis_size = 3;//rnd.Next(15,40);
+        //z_axis_size = 3;//rnd.Next(15,40);
         //plus_dogs=(int)Mathf.Floor(Mathf.Sqrt(x_axis_size*x_axis_size+z_axis_size*z_axis_size)/15);
         
         //Debug.Log(plus_dogs);
