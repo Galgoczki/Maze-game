@@ -34,6 +34,15 @@ public class torch : MonoBehaviour
     {
         float tavolsag =Vector3.Distance(player.position, transform.position);
         if(tavolsag<=distance){
+            if(Global_options_handler.horroristic){
+                if(Global_options_handler.lightoff){
+                    my_light.enabled = false;
+                }else{
+                    if(!my_light.enabled){
+                        my_light.enabled=true;
+                    }
+                }
+            }
             if(!m_Play){
                 maudio.Play();
                 m_Play=true;

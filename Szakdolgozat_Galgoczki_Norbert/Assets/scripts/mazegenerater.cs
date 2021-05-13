@@ -38,6 +38,7 @@ public class mazegenerater : MonoBehaviour
     private GameObject door_inner;
     private GameObject end_room;
     private GameObject box;
+    private GameObject coin;
     private bool[,,] basemaze;
     private bool[,,] doorMap;
     private int[,] roomMap;
@@ -89,13 +90,14 @@ public class mazegenerater : MonoBehaviour
         door_inner = (GameObject)Resources.Load("prefab/door", typeof(GameObject));
         end_room = (GameObject)Resources.Load("prefab/end_room", typeof(GameObject));
         box = (GameObject)Resources.Load("prefab/box", typeof(GameObject));
+        coin = (GameObject)Resources.Load("prefab/coin_holder", typeof(GameObject));
         //dogscript = dogGO.GetComponent<Dog>();
 
 
         x_axis_size = rnd.Next(15,40);
         z_axis_size = rnd.Next(15,40);
-        //x_axis_size = 4;//rnd.Next(15,40);
-        //z_axis_size = 4;//rnd.Next(15,40);
+        x_axis_size = 3;//rnd.Next(15,40);
+        z_axis_size = 3;//rnd.Next(15,40);
         //plus_dogs=(int)Mathf.Floor(Mathf.Sqrt(x_axis_size*x_axis_size+z_axis_size*z_axis_size)/15);
         
         //Debug.Log(plus_dogs);
@@ -152,13 +154,15 @@ public class mazegenerater : MonoBehaviour
                 //floor
                 bool light= false;// van e már fény
                 bool chest = true;//kell e ládát lerakni az adott cellába
-                
+                if(rnd.Next(0,100)<=10){
+                    Instantiate(coin,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2,starterpoint.y+1.5f,starterpoint.z+(j*fullcellsize)-fullcellsize/2),Quaternion.identity,floors.transform);
+                }
                 cell_floor = Instantiate(floor,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2,starterpoint.y-0.5f,starterpoint.z+(j*fullcellsize)-fullcellsize/2),Quaternion.identity,floors.transform);
                 cell_floor_script = cell_floor.GetComponent<Cell>();
                 cell_floor_script.registrat(dogscript_entity_1,dogscript_entity_2,i,j);
                 
                 if(roomMap[i,j]!=0){//its a room
-                    if((offseti==1 || offsetj==1 )&&(offseti!=offsetj)){
+                    if(offseti==offsetj){
                         Instantiate(roof_room,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2,starterpoint.y+5.5f,starterpoint.z+(j*fullcellsize)-fullcellsize/2),Quaternion.identity,roofs.transform);
                     }else{
                         Instantiate(roof,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2,starterpoint.y+5.5f,starterpoint.z+(j*fullcellsize)-fullcellsize/2),Quaternion.identity,roofs.transform);
@@ -232,25 +236,25 @@ public class mazegenerater : MonoBehaviour
                     if(doorMap[i,j,0]){
                         Instantiate(wall_whitout_door,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2-3.5f       ,starterpoint.y+2.5f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2)            ,Quaternion.Euler(-90f,270f,0f),walls.transform); 
                         Instantiate(door_frame,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2-3.5f       ,starterpoint.y+1.35f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2)            ,Quaternion.Euler(-90f,270f,0f),walls.transform); 
-                        Instantiate(door_inner,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2-3.6f       ,starterpoint.y+1.23f                ,starterpoint.z+(j*fullcellsize)-fullcellsize/2-0.06f)            ,Quaternion.Euler(-90f,270f,0f),walls.transform); 
+                        //Instantiate(door_inner,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2-3.6f       ,starterpoint.y+1.23f                ,starterpoint.z+(j*fullcellsize)-fullcellsize/2-0.06f)            ,Quaternion.Euler(-90f,270f,0f),walls.transform); 
                         
                     }
                     if(doorMap[i,j,1]){
                         Instantiate(wall_whitout_door,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2             ,starterpoint.y+2.5f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2-3.5f)      ,Quaternion.Euler(-90f,180f,0f),walls.transform);
                         Instantiate(door_frame,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2             ,starterpoint.y+1.35f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2-3.5f)      ,Quaternion.Euler(-90f,180f,0f),walls.transform);
-                        Instantiate(door_inner,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2+0.06f             ,starterpoint.y+1.23f               ,starterpoint.z+(j*fullcellsize)-fullcellsize/2-3.66f)      ,Quaternion.Euler(-90f,180f,0f),walls.transform);
+                        //Instantiate(door_inner,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2+0.06f             ,starterpoint.y+1.23f               ,starterpoint.z+(j*fullcellsize)-fullcellsize/2-3.6f)      ,Quaternion.Euler(-90f,180f,0f),walls.transform);
                     
                     }
                     if(doorMap[i,j,2]){
                         Instantiate(wall_whitout_door,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2+3.5f       ,starterpoint.y+2.5f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2)            ,Quaternion.Euler(-90f,90f,0f),walls.transform);
                         Instantiate(door_frame,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2+3.5f       ,starterpoint.y+1.35f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2)            ,Quaternion.Euler(-90f,90f,0f),walls.transform);
-                        Instantiate(door_inner,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2+3.6f       ,starterpoint.y+1.23f                ,starterpoint.z+(j*fullcellsize)-fullcellsize/2+0.06f)            ,Quaternion.Euler(-90f,90f,0f),walls.transform);
+                        //Instantiate(door_inner,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2+3.6f       ,starterpoint.y+1.23f                ,starterpoint.z+(j*fullcellsize)-fullcellsize/2+0.06f)            ,Quaternion.Euler(-90f,90f,0f),walls.transform);
                     
                     }
                     if(doorMap[i,j,3]){
                         Instantiate(wall_whitout_door,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2             ,starterpoint.y+2.5f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2+3.5f)      ,Quaternion.Euler(-90f,0f,0f),walls.transform);
                         Instantiate(door_frame,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2             ,starterpoint.y+1.35f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2+3.5f)      ,Quaternion.Euler(-90f,0f,0f),walls.transform);
-                        Instantiate(door_inner,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2-0.06f             ,starterpoint.y+1.23f               ,starterpoint.z+(j*fullcellsize)-fullcellsize/2+3.6f)      ,Quaternion.Euler(-90f,0f,0f),walls.transform);
+                        //Instantiate(door_inner,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2-0.06f             ,starterpoint.y+1.23f               ,starterpoint.z+(j*fullcellsize)-fullcellsize/2+3.6f)      ,Quaternion.Euler(-90f,0f,0f),walls.transform);
                     
                     }
 
@@ -261,7 +265,7 @@ public class mazegenerater : MonoBehaviour
                     if(basemaze[i,j,0]){// left - down
                         if(rnd.Next(box_rate)==0 &&chest){
                             //Debug.Log("chest");
-                            Instantiate(box,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2-2.25f       ,starterpoint.y+0.4f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2)            ,Quaternion.Euler(0f,270f,0f),walls.transform); 
+                            Instantiate(box,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2-2.25f       ,starterpoint.y+0.4f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2)            ,Quaternion.Euler(0f,270f+180f,0f),walls.transform); 
                             chest=false;
                         }
 
@@ -275,7 +279,7 @@ public class mazegenerater : MonoBehaviour
                     if(basemaze[i,j,1]){// top - right
                         if(rnd.Next(box_rate)==0 &&chest){
                             //Debug.Log("chest");
-                            Instantiate(box,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2             ,starterpoint.y+0.4f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2-2.25f)      ,Quaternion.Euler(0f,180f,0f),walls.transform);
+                            Instantiate(box,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2             ,starterpoint.y+0.4f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2-2.25f)      ,Quaternion.Euler(0f,180f+180f,0f),walls.transform);
                             chest=false;
                         }
                         if(!light){
@@ -288,7 +292,7 @@ public class mazegenerater : MonoBehaviour
                     if(basemaze[i,j,2]&& !(endi==i&&endj==j)){// right -top
                         if(rnd.Next(box_rate)==0 &&chest){
                             //Debug.Log("chest");
-                            Instantiate(box,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2+2.25f       ,starterpoint.y+0.4f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2)            ,Quaternion.Euler(0f,90f,0f),walls.transform);
+                            Instantiate(box,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2+2.25f       ,starterpoint.y+0.4f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2)            ,Quaternion.Euler(0f,90f+180f,0f),walls.transform);
                             chest=false;
                         }
                         if(!light){
@@ -301,7 +305,7 @@ public class mazegenerater : MonoBehaviour
                     if(basemaze[i,j,3]&& !(endi==i&&endj==j)){// down - left
                         if(rnd.Next(box_rate)==0 &&chest){
                             //Debug.Log("chest");
-                            Instantiate(box,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2             ,starterpoint.y+0.4f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2+2.25f)      ,Quaternion.Euler(0f,0f,0f),walls.transform);
+                            Instantiate(box,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2             ,starterpoint.y+0.4f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2+2.25f)      ,Quaternion.Euler(0f,0f+180f,0f),walls.transform);
                             chest=false;
                         }
                         if(!light){
@@ -371,7 +375,7 @@ public class mazegenerater : MonoBehaviour
 
         //here i have 2 idea with is flexiable to themaze size
         //temporary = Mathf.RoundToInt(Mathf.Pow((x_axis_size*z_axis_size),1f/2f));
-        temporary = (Mathf.RoundToInt( Mathf.Pow( (x_axis_size*z_axis_size), 1f / 2f))+Mathf.RoundToInt( Mathf.Pow((x_axis_size+z_axis_size) , 1f / 2f)))/2;
+        temporary = Mathf.RoundToInt( Mathf.Pow( (x_axis_size*z_axis_size), 1f / 2f))+Mathf.RoundToInt( Mathf.Pow((x_axis_size+z_axis_size) , 1f / 2f));
          //temporary = Mathf.RoundToInt(Mathf.Pow((x_axis_size+z_axis_size),1f/2f));
         key += temporary.ToString()+";";
         //its will need in the last argument to the algoritm
@@ -416,6 +420,7 @@ public class mazegenerater : MonoBehaviour
         key += "0,1,2,3";//+";"; ha bovitjuk
     }
     void generate(){
+        //encode the key
         //split the key component to generat easily
         string[] temporarystringholder = key.Split(';');// the stats of the allgoritm param
         string[] temporarystringholder2;
@@ -442,16 +447,9 @@ public class mazegenerater : MonoBehaviour
         }
         //key read is done,we can start the algoritm
 
-
         //karakter a jobb alsó sarokban kezd
         playersTransforms.position = playerStarterpont;
-
-
         bool done=false;
-        /*foreach (var a in algorimusFilo)
-        {
-            Debug.Log(a);
-        }*/
         int prex=ListOfThePossiblaStarterPoints[0][0];
         int prey=ListOfThePossiblaStarterPoints[0][1];
         recursiveGenerate(ListOfThePossiblaStarterPoints[0][0],ListOfThePossiblaStarterPoints[0][1],ListOfThePossiblaStarterPoints[0][0],ListOfThePossiblaStarterPoints[0][1],deep);
@@ -500,10 +498,6 @@ public class mazegenerater : MonoBehaviour
                 }
             }
         }
-    /*foreach (var item in ListOfThePossiblaStarterPoints)
-    {
-        Debug.Log(item[0] + "és" +item[1]);
-    }*/
     //--------------
         int asd=1;
         int szamlalo=0;
@@ -601,7 +595,7 @@ public class mazegenerater : MonoBehaviour
     //-----------
     }
     bool recursiveGenerate(int prex,int prey,int x,int y,int currentRecursivePoinLeft){//i didnt konw now why we give back bool
-        if(currentRecursivePoinLeft==0/*|| (generateLeft[x-1,y]!=0 && generateLeft[x,y-1] !=0 && generateLeft[x,y+1]!= 0 && generateLeft[x+1,y]!=0)*/){//if we are cant move forward or we didnt have left stap point
+        if(currentRecursivePoinLeft==0){//if we are cant move forward or we didnt have left stap point
             generateLeft[x,y]=-1;
             return true;
         }

@@ -31,6 +31,9 @@ public class Dog : MonoBehaviour
     private float turningspeed=0.5f;
     private bool animeting = true;
     private Animator animator;
+    private bool bloodeye=false;
+    private Light[] eyes; 
+    private SphereCollider kill_zone;
     
     /*
                             dogposition.eulerAngles.y
@@ -54,11 +57,98 @@ public class Dog : MonoBehaviour
         Transform temperary = this.gameObject.transform.GetChild(0);
         animator = temperary.gameObject.GetComponent<Animator>();
         wait= 10f;
+        eyes = GetComponentsInChildren<Light>();
+        kill_zone = GetComponent<SphereCollider>();
     }
 
+    private bool looking(int i,int j,int faceing){
+        int index=0;
+        //Debug.Log("keres és itt vagy"+playeri+" "+playerj);
+        switch (faceing){   
+            case 0:
+                //dogi-=1;
+                while(true){
+                    if(i-index==playeri &&j==playerj){//player itt van akkor erre amúgy tovább elöre nézünk
+                        //bloodeye=true;
+                        return true;
+                    }
+
+                    if(!maze[i-index,j,faceing]){//nincs fal
+                        index++;
+                    }else{//nem lehet tovább menni akkor kilépünk
+                        return false;
+                    }
+                }
+                break;
+            case 1:
+                //dogj-=1;
+                while(true){
+                    if(i==playeri &&j-index==playerj){//player itt van akkor erre amúgy tovább elöre nézünk
+                        //bloodeye=true;
+                        return true;
+
+                    }
+
+                    if(!maze[i,j-index,faceing]){//nincs fal
+                        index++;
+                    }else{//nem lehet tovább menni akkor kilépünk
+                        return false;
+                    }
+                    
+                }
+                break;
+            case 2:
+                //dogi+=1;
+                while(true){
+                    if(i+index==playeri &&j==playerj){//player itt van akkor erre amúgy tovább elöre nézünk
+                        //bloodeye=true;
+                        return true;
+
+                    }
+
+                    if(!maze[i+index,j,faceing]){//nincs fal
+                        index++;
+                    }else{//nem lehet tovább menni akkor kilépünk
+                        return false;
+                    }
+                    
+                }
+                break;
+            case 3:
+                //dogj+=1;
+                while(true){
+                    if(i==playeri &&j+index==playerj){//player itt van akkor erre amúgy tovább elöre nézünk
+                        //bloodeye=true;
+                        return true;
+                        
+                    }
+
+                    if(!maze[i,j+index,faceing]){//nincs fal
+                        index++;
+                    }else{//nem lehet tovább menni akkor kilépünk
+                        return false;
+                    }
+
+                }
+                break;
+            default:
+                break;
+        }
+        return false;
+    }
     // Update is called once per frame
     void Update(){ 
-        Debug.DrawLine(transform.position,transform.position+transform.forward,Color.red,0.3f);
+        //Debug.DrawLine(transform.position,transform.position+transform.forward,Color.red,0.3f);
+        if(bloodeye){
+            eyes[0].enabled=true;
+            eyes[1].enabled=true;
+            Global_options_handler.lightoff=true;
+        }else{
+            eyes[0].enabled=false;
+            eyes[1].enabled=false;
+            Global_options_handler.lightoff=false;
+        }
+
         if(maze!=null&& wait<=0){ 
             if(!animeting){
                 animeting=true;
@@ -69,21 +159,42 @@ public class Dog : MonoBehaviour
 
                 turningTime += Time.deltaTime/turningspeed;
                 transform.rotation = Quaternion.Lerp(turningVector.rotation, Quaternion.Euler (turningVector.rotation.x, turningVector.rotation.y-turning, turningVector.rotation.z) , turningTime);
+                kill_zone.radius = 4f;
 
             }else{
+                kill_zone.radius = 3f;
                 turningVector=transform;
                 if(timeToTarget<1){
-                    timeToTarget += Time.deltaTime/7;
+                    if(looking(dogi,dogj,(faceing+2)%4)){
+                        bloodeye=true;
+                        timeToTarget += Time.deltaTime/0.5f;
+                    }else{
+                        bloodeye=false;
+                        timeToTarget += Time.deltaTime/7;
+                    }
+                    
                     transform.position = Vector3.Lerp(dogposition, target, timeToTarget);
                 }
                 if(timeToTarget>=1){//update the target
+                    bloodeye=false;
                     int optimalface=4;
-                    int optimalface_index=10;
+                    //int optimalface_index=10;
+                    bool best_right =false;
                     for (int index = 0; index < 4; index++){
                         if(!maze[dogi,dogj,((faceing+1+index)%4)]){//mindig jobbra szabály/right-hand rule
-                                optimalface=((faceing+1+index)%4);
-                                turning=((faceing+2+index)%4)*90;
-                                break;
+                                if(!best_right){
+                                    optimalface=((faceing+1+index)%4);
+                                    best_right=true;
+                                    turning=((faceing+2+index)%4)*90;
+                                }
+                                if(looking(dogi,dogj,((faceing+1+index)%4))){
+                                    bloodeye=true;
+                                    optimalface=((faceing+1+index)%4);
+                                    best_right=true;
+                                    turning=((faceing+2+index)%4)*90;
+                                    break;
+                                }
+
                         }
                     }
                     faceing=optimalface;
@@ -116,7 +227,7 @@ public class Dog : MonoBehaviour
                             break;
                     }
                     faceing=(faceing+2)%4;
-                    turningTime=0;
+                    turningTime=(bloodeye?0.5f:0);
                 }
             }
         }else{
@@ -165,7 +276,7 @@ public class Dog : MonoBehaviour
         return new List<Vector2>();
     }
     private List<Vector2> rekurziv_way_from_the_player_to_the_dog(int pre_i,int pre_j,int now_i,int now_j){
-        int best_way;
+        //int best_way;
         if(maze[now_i,now_j,0]  &&  pre_i!=now_i-1 &&pre_j!=now_j){
            
         }
@@ -231,6 +342,7 @@ public class Dog : MonoBehaviour
         //Destroy(this.gameObject);
         //this.gameObject.SetActive(false);
         wait=15f;
+        bloodeye=false;
     }
 
     public void say_hi(int a){

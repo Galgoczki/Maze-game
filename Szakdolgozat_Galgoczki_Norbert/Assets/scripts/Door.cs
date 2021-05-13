@@ -17,19 +17,32 @@ public class Door : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        autoclose-=Time.deltaTime;
-        if(autoclose<0&&nyitva)
-            csuk();
+        if(autoclose>0)
+            autoclose-=Time.deltaTime;
+        
+        //if(autoclose<0&&nyitva)
+        //    csuk();
     }
 
     public void open_door(){
-        autoclose=10f;
-        nyitva=true;
-        Debug.Log("nyilivan");
-        animator.SetTrigger("nyit");
+        if(!nyitva){
+            autoclose=3f;
+            nyitva=true;
+            animator.SetTrigger("nyit");
+        }else{
+            autoclose=3f;
+            nyitva=false;
+            animator.SetTrigger("csuk");
+        } 
         
     }
-
+    public bool nyithato(){
+        if(autoclose<=0.1f){
+            return true;
+        }else{
+            return false;
+        }
+    }
     private void csuk(){
         autoclose=0f;
         nyitva=false;
