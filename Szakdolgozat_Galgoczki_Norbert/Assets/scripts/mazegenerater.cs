@@ -129,18 +129,17 @@ public class mazegenerater : MonoBehaviour
         int roomcounter=0;
         generate();
 
-        GameObject temporary_sexy;
+        GameObject temporaryDog;
 
-        temporary_sexy=Instantiate(dogGO,new Vector3(starterpoint.x+(0*fullcellsize)+fullcellsize/2,               starterpoint.y+1.5f-0.81f,    starterpoint.z+((z_axis_size-1)*fullcellsize)-fullcellsize/2) ,Quaternion.identity,enemyfolder.transform);
+        temporaryDog = Instantiate(dogGO,new Vector3(starterpoint.x+(0*fullcellsize)+fullcellsize/2,               starterpoint.y+1.5f-0.81f,    starterpoint.z+((z_axis_size-1)*fullcellsize)-fullcellsize/2) ,Quaternion.identity,enemyfolder.transform);
         
-        dogscript_entity_1=temporary_sexy.GetComponent<Dog>();
-        dogscript_entity_1.say_hi(1);
+        dogscript_entity_1= temporaryDog.GetComponent<Dog>();
         dogscript_entity_1.setMaze(basemaze,x_axis_size,z_axis_size,0,0,0,z_axis_size-1,new Vector3(starterpoint.x+fullcellsize/2,starterpoint.y+1.5f-0.81f,starterpoint.z-fullcellsize/2));
 
-        temporary_sexy=Instantiate(dogGO,new Vector3(starterpoint.x+((x_axis_size-1)*fullcellsize)+fullcellsize/2,     starterpoint.y+1.5f-0.81f,    starterpoint.z+(0*fullcellsize)-fullcellsize/2)           ,Quaternion.identity,enemyfolder.transform);
+        temporaryDog = Instantiate(dogGO,new Vector3(starterpoint.x+((x_axis_size-1)*fullcellsize)+fullcellsize/2,     starterpoint.y+1.5f-0.81f,    starterpoint.z+(0*fullcellsize)-fullcellsize/2)           ,Quaternion.identity,enemyfolder.transform);
         
         
-        dogscript_entity_2=temporary_sexy.GetComponent<Dog>();
+        dogscript_entity_2= temporaryDog.GetComponent<Dog>();
         dogscript_entity_2.say_hi(2);
         dogscript_entity_2.setMaze(basemaze,x_axis_size,z_axis_size,0,0,x_axis_size-1,0,new Vector3(starterpoint.x+fullcellsize/2,starterpoint.y+1.5f-0.81f,starterpoint.z-fullcellsize/2));
 
@@ -176,7 +175,6 @@ public class mazegenerater : MonoBehaviour
                             Instantiate(bookshelf,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2-3.25f+2f       ,starterpoint.y+2f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2-1f)            ,Quaternion.Euler(-90f,-135f,0f),walls.transform);//-
                         }
                         if(basemaze[i,j,3]){
-                            //HÁRMAS DOLGA AZ A SZEKRÉNY   capsry
                         }else{
                             Instantiate(bookshelf,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2-3.25f+1f       ,starterpoint.y+2f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2+1.5f)            ,Quaternion.Euler(-90f,270f,0f),walls.transform); 
                         }
@@ -192,7 +190,6 @@ public class mazegenerater : MonoBehaviour
                        
                         }
                         if(basemaze[i,j,0]){
-                            //NULLLÁS DOLGA AZ A SZEKRÉNY   capsry
                         }else{
                            Instantiate(bookshelf,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2-1.5f       ,starterpoint.y+2f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2-3.25f+1f)            ,Quaternion.Euler(-90f,180f,0f),walls.transform); 
                          
@@ -209,7 +206,6 @@ public class mazegenerater : MonoBehaviour
                     
                         }
                         if(basemaze[i,j,1]){
-                            //EGYES DOLGA AZ A SZEKRÉNY   capsry
                         }else{
                            Instantiate(bookshelf,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2+3.25f-1f       ,starterpoint.y+2f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2-1.5f)            ,Quaternion.Euler(-90f,90f,0f),walls.transform); 
                         
@@ -226,7 +222,6 @@ public class mazegenerater : MonoBehaviour
                         
                         }
                         if(basemaze[i,j,2]){
-                            //KETTES DOLGA AZ A SZEKRÉNY   capsry
                         }else{
                           Instantiate(bookshelf,new Vector3(starterpoint.x+(i*fullcellsize)+fullcellsize/2+1.5f       ,starterpoint.y+2f        ,starterpoint.z+(j*fullcellsize)-fullcellsize/2+3.25f-1f)            ,Quaternion.Euler(-90f,0f,0f),walls.transform); 
                      
